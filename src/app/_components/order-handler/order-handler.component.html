@@ -1,0 +1,211 @@
+<table>
+    <tr style="vertical-align: top;">
+        <td colspan="3">
+            <p style='text-align: center; font-weight:bold'>
+                <mat-label>Ordine</mat-label>
+                &nbsp;
+                <mat-label>{{ orderHandler.details.orderRef }} {{ orderHandler.details.customerDescription }} </mat-label>
+                &nbsp;
+                <mat-label>- Valore</mat-label>
+                &nbsp;
+                <mat-label>{{ orderValue | number:'.2-2' }}&euro;</mat-label>
+            </p>
+        </td>
+    </tr>
+    <tr style="vertical-align: top;">
+        <td>
+            <mat-form-field appearance="fill">
+                <mat-label>Stato</mat-label>
+                <mat-select [(ngModel)]="orderHandler.details.status" 
+                            (selectionChange)="onOrderStatusChange($event)">
+                    <div *ngFor="let item of status;" >
+                        <mat-option [value]="item.id" >{{ item.des }}</mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill">
+                <mat-label>Vettore</mat-label>
+                <mat-select id="forwarder"
+                            [(ngModel)]="orderHandler.details.forwarder" 
+                            (selectionChange)="onAttributeChange($event)">
+                    <div *ngFor="let item of forwarder;" >
+                        <mat-option [value]="item.id" >{{ item.des }}</mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" rows="1">
+                <mat-label style='font-size: 11px;'>Note</mat-label>
+                <textarea matInput [(ngModel)]="orderHandler.note.note" 
+                                (change)="onOrderNoteChange($event)"
+                                style="line-height: 12px !important;max-height: 24px !important;"></textarea>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table>
+                <tr style='text-align: left;'>
+                    <td>
+                        <div *ngIf="orderHandler.details.forwarder=='CES'">
+                            <mat-label>Dimensioni</mat-label>
+                        </div>
+                        <div *ngIf="orderHandler.details.forwarder=='TWS'">
+                            <mat-label>Numero colli</mat-label>
+                        </div>
+                    </td>
+                    <td colspan="4">
+                        <div *ngIf="orderHandler.details.forwarder=='CES'">
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <mat-label>Lun</mat-label>
+                                <input matInput id="palletLength"
+                                        [(ngModel)]="orderHandler.details.palletLength" 
+                                        (change)="onAttributeChange($event)"
+                                        placeholder="Larghezza"
+                                        maxlength="3">
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <mat-label>Lar:</mat-label>
+                                <input matInput id="palletWidth"
+                                        [(ngModel)]="orderHandler.details.palletWidth" 
+                                        (change)="onAttributeChange($event)"
+                                        placeholder="Larghezza"
+                                        maxlength="3">
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <mat-label>Alt:</mat-label>
+                                <input matInput id="palletHeigth"
+                                       [(ngModel)]="orderHandler.details.palletHeigth" 
+                                       (change)="onAttributeChange($event)"
+                                       placeholder="Altezza"
+                                       maxlength="3">
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <mat-label>Kg:</mat-label>
+                                <input matInput id="palletWeigth"
+                                       [(ngModel)]="orderHandler.details.palletWeigth" 
+                                       (change)="onAttributeChange($event)"
+                                       placeholder="Peso"
+                                       maxlength="3">
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="orderHandler.details.forwarder=='TWS'">
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <input matInput id="numberOfItemsToShip"
+                                       [(ngModel)]="orderHandler.details.numberOfItemsToShip" 
+                                       (change)="onAttributeChange($event)"
+                                       placeholder="Colli">
+                            </mat-form-field>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="orderHandler.details.status=='RDY'">
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <input matInput id="transportDocNum"
+                                    [(ngModel)]="orderHandler.details.transportDocNum" 
+                                    (change)="onAttributeChange($event)"
+                                    placeholder="Bolla">
+                            </mat-form-field>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="orderHandler.details.forwarder!='CLI'">
+                    <td>
+                        <mat-label>Assicurazione</mat-label>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <input matInput id="insuranceCost"
+                                    [(ngModel)]="orderHandler.details.insuranceCost" 
+                                    (change)="onAttributeChange($event)"
+                                    maxlength="5">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-label>Spedizione</mat-label>
+                    </td>
+                    <td style='vertical-align: center;'>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Cli</mat-label>
+                            <input matInput id="clientCost"
+                                    [(ngModel)]="orderHandler.details.clientCost" 
+                                    (change)="onAttributeChange($event)"
+                                    maxlength="7">
+                        </mat-form-field>
+                        &nbsp;
+                        <mat-form-field appearance="fill" style="width:50px !important; text-align: right;">
+                            <mat-label>Vet</mat-label>
+                            <input matInput id="forwarderCost"
+                                    [(ngModel)]="orderHandler.details.forwarderCost" 
+                                    (change)="onAttributeChange($event)"
+                                    maxlength="7">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <div *ngIf="orderHandler.details.customerDeliveryProvince==''">
+                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                                <input matInput id="customerDeliveryProvince"
+                                    [(ngModel)]="orderHandler.details.customerDeliveryProvince" 
+                                    (change)="onAttributeChange($event)"
+                                    placeholder="PV">
+                            </mat-form-field>
+                        </div>
+                    </td>
+
+                </tr>
+            </table>
+        </td>
+        <td style='text-align: left;'>
+            <table>
+                <tr style='text-align: left;'>
+                    <td>
+                        <mat-label>Approntamento</mat-label>
+                    </td>
+                    <td colspan="4">
+                        <mat-form-field style='width: 100px'>
+                            <input matInput [matDatepicker]="preparationDate" 
+                                            placeholder="Scegli data" 
+                                            [(ngModel)]="orderHandler.details.preparationDate"
+                                            (ngModelChange)="onAttributeChange($event)">
+                            <mat-datepicker-toggle matSuffix [for]="preparationDate"></mat-datepicker-toggle>
+                            <mat-datepicker #preparationDate></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr style='text-align: left;'>
+                    <td>
+                        <mat-label>Statistiche</mat-label>
+                    </td>
+                    <td colspan="4">
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Aut</mat-label>
+                            <input matInput id="assemblyTimeAuto"
+                                    [(ngModel)]="orderHandler.details.assemblyTimeAuto" 
+                                    maxlength="3"
+                                    disabled>
+                        </mat-form-field>
+                        &nbsp;
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Man</mat-label>
+                            <input matInput id="assemblyTime"
+                                    [(ngModel)]="orderHandler.details.assemblyTime" 
+                                    (change)="onAttributeChange($event)"
+                                    maxlength="3">
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+         </td>
+<!--
+         <td>
+            <button mat-button id="dialog" (click)="openDialog()">Dialog</button>
+         </td>
+-->
+    </tr>
+</table>

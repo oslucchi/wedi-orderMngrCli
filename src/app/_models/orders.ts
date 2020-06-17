@@ -1,0 +1,36 @@
+export class Orders {
+	idOrder: number;
+	idCustomer: number;
+	idCustomerDelivery: number;
+	status: string;
+	preparationDate:Date;
+	shipmentDate:Date;
+    palletLength: number;
+    palletWidth: number;
+    palletHeigth: number;
+    palletWeigth: number;
+    numberOfItemsToShip: number;
+    orderRef: string;
+    transportDocNum: string;
+    forwarder: string;
+    forwarderCost: number;
+    clientCost: number;
+    assemblyTimeAuto: number;
+    assemblyTime: number;
+    palletCost: number;
+    insuranceCost: number;
+    selected: boolean;
+    customerRefERP: string;
+    customerDescription: string;
+    customerDeliveryProvince: string;
+    boards: number;
+    trays: number;
+    design: number;
+    accessories: number;
+    sourceIssue: string;
+    compositionBoards: number;
+    compositionTrays: number;
+    compositionDesign: number;
+    compositionAccessories: number;
+    orderValue: number;
+}

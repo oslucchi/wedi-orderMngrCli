@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+    <p>
+        {{message}}
+    </p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button *ngIf="buttons[0]" class="mat-raised-button"(click)="close()">Si</button>
+    <button *ngIf="buttons[1]" class="mat-raised-button"(click)="save()">No</button>
+    <button *ngIf="buttons[2]" class="mat-raised-button mat-primary"(click)="cancel()">Annulla</button>
+</mat-dialog-actions>

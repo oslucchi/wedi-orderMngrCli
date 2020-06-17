@@ -1,0 +1,249 @@
+<div style='max-height:260px; min-height:260px;'>
+    <table>
+        <tr>
+            <td style='border: 1px solid black; vertical-align: top;'>
+                <p style='text-align: center; font-weight:bold'>
+                    FILTRI SELEZIONE ORDINE
+                </p>
+                <table>
+                    <tr>
+                        <th style='width: 150px;'>
+                            ORDINI
+                        </th>
+                        <th style='width: 150px;'>
+                            PREPARAZIONE
+                        </th>
+                        <th style='width: 150px;'>
+                            SPEDIZIONE
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='SYS'[(ngModel)]="profile.filters.filterOrders[0]"
+                                          [checked]="profile.filters.filterOrders[0]"
+                                          (change)="changeProfileFilters($event)">
+                                A sistema
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='PRE' [(ngModel)]="profile.filters.filterWarehouse[0]"
+                                          [checked]="profile.filters.filterWarehouse[0]"
+                                          (change)="changeProfileFilters($event)">
+                                In preparazione
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='SHI' [(ngModel)]="profile.filters.filterShipment[0]"
+                                          [checked]="profile.filters.filterShipment[0]"
+                                          (change)="changeProfileFilters($event)">
+                                          Spediti
+                            </mat-checkbox>                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='ONH' [(ngModel)]="profile.filters.filterOrders[1]"
+                                          [checked]="profile.filters.filterOrders[1]"
+                                          (change)="changeProfileFilters($event)">
+                                Sospesi
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='RDY' [(ngModel)]="profile.filters.filterWarehouse[1]"
+                                          [checked]="profile.filters.filterWarehouse[1]"
+                                          (change)="changeProfileFilters($event)">
+                                Pronti
+                            </mat-checkbox>                            
+                        </td>
+                       <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='CON' [(ngModel)]="profile.filters.filterOrders[2]"
+                                          [checked]="profile.filters.filterOrders[2]"
+                                          (change)="changeProfileFilters($event)">
+                                Confermati
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='COE' [(ngModel)]="profile.filters.filterOrders[3]"
+                                          [checked]="profile.filters.filterOrders[3]"
+                                          (change)="changeProfileFilters($event)">
+                                Confermati-eccezione
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='ORA' [(ngModel)]="profile.filters.filterOrders[4]"
+                                          [checked]="profile.filters.filterOrders[4]"
+                                          (change)="changeProfileFilters($event)">
+                                Tutti
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='WHA' [(ngModel)]="profile.filters.filterWarehouse[2]"
+                                          [checked]="profile.filters.filterWarehouse[2]"
+                                          (change)="changeProfileFilters($event)">
+                                Tutti
+                            </mat-checkbox>                            
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style='border: 1px solid black; vertical-align: top;'>
+                <app-order-handler [orderHandler]="orderHandler" 
+                                   [orderList]="orderList" 
+                                   [orderDetails]="orderDetails"
+                                   [orderValue]="orderValue"
+                                   [profile]="profile"
+                                   (getOrdersBasedOnFilters)="getOrdersBasedOnFilters()" >
+                </app-order-handler>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <table style='width:100%;'>
+        <tr>
+            <td width='60%' valign='top'>
+                <div style='max-height:500px; min-height:500px; overflow-y:auto'>
+                    <mat-table [dataSource]="dataSource" id="orders" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="status">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>St</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.status}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="forwarder">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Vet</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.forwarder}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="orderRef">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Ordine</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.orderRef}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerRefERP">
+                            <mat-header-cell *matHeaderCellDef>Codice</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerRefERP}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerDescription">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerDescription}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerDeliveryProvince">
+                            <mat-header-cell *matHeaderCellDef>PV</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerDeliveryProvince}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="preparationDate">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.preparationDate|date:'dd/MM/yy'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="sourceIssue">
+                            <mat-header-cell *matHeaderCellDef>E</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.sourceIssue}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="palletLength">
+                            <mat-header-cell *matHeaderCellDef>L</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.palletLength}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="palletWidth">
+                            <mat-header-cell *matHeaderCellDef>W</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.palletWidth }}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="palletHeigth">
+                            <mat-header-cell *matHeaderCellDef>H</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.palletHeigth}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="palletWeigth">
+                            <mat-header-cell *matHeaderCellDef>Kg</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.palletWeigth}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="empty">
+                            <mat-header-cell *matHeaderCellDef>{{ empty }}</mat-header-cell>
+                            <mat-cell *matCellDef="let order">
+                                {{ empty }}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="boards">
+                            <mat-header-cell *matHeaderCellDef>B</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightBoards':order.boards>0}">
+                                {{order.boards | number:'.0-0'}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="trays">
+                            <mat-header-cell *matHeaderCellDef>P</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightTrays':order.trays>0}">
+                                {{(order.trays > 0 ? order.trays : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="design">
+                            <mat-header-cell *matHeaderCellDef>D</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightDesign':order.design>0}">
+                                {{(order.design > 0 ? order.design : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="accessories">
+                            <mat-header-cell *matHeaderCellDef>A</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightAccessories':order.accessories>0}">
+                                {{(order.accessories > 0 ? order.accessories : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="empty1">
+                            <mat-header-cell *matHeaderCellDef>{{ empty }}</mat-header-cell>
+                            <mat-cell *matCellDef="let order">
+                                {{ empty }}
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="getOrdersDisplayedColumns()"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: getOrdersDisplayedColumns()" (click)="listOrderDetails(row)"></mat-row>
+                    </mat-table>
+                </div>
+            </td>
+            <td width='40%' valign='top'>
+                <div style='max-height:500px; min-height:500px; overflow-y:auto'>
+                    <mat-table [dataSource]="dataSourceDetails" id="orderDetails">
+                        <ng-container matColumnDef="articleRefERP">
+                            <mat-header-cell *matHeaderCellDef>Codice</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{detail.articleRefERP}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="articleDescription">
+                            <mat-header-cell *matHeaderCellDef>Descrizione</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{detail.articleDescription}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="articleSourceIssue">
+                            <mat-header-cell *matHeaderCellDef>E</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{(detail.sourceIssue ? "X" : "")}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="piecesFromSqm">
+                            <mat-header-cell *matHeaderCellDef>Pezzi</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{detail.piecesFromSqm}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="quantity">
+                            <mat-header-cell *matHeaderCellDef>Qta'</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{detail.quantity| number:'.2-2' }}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="articleUnityOfMeasure">
+                            <mat-header-cell *matHeaderCellDef>UM</mat-header-cell>
+                            <mat-cell *matCellDef="let detail">{{detail.articleUnityOfMeasure}}</mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="getDetailsDisplayedColumns()"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: getDetailsDisplayedColumns()"></mat-row>
+                    </mat-table>
+            </div>
+            </td>
+        </tr>
+    </table>
+</div>
