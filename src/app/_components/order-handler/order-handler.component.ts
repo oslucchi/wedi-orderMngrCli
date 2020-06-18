@@ -14,6 +14,7 @@ import { Articles } from '@app/_models/articles';
 import { formatDate } from '@angular/common';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { MsgBoxComponent } from '@app/_components/msg-box/msg-box.component';
+import { CustomerDelivery } from '@app/_models/customer-delivery';
 
 export const PICK_FORMATS = {
   parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
@@ -73,6 +74,8 @@ export class OrderHandlerComponent implements OnInit {
     { id: "CLI", des: "Ritiro cliente", selected: false },
     { id: "DIR", des: "Consegna diretta", selected: false },
   ]
+
+  public province: string;
 
   constructor(private apiService: ApiService,
               private dialog: MatDialog) {
@@ -184,13 +187,23 @@ export class OrderHandlerComponent implements OnInit {
       .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res.body.pkgStats);
-          if (res.body.pkgStats.autoEndTime != null)
+          if ((res.body.pkgStats.autoEndTime != null) &&
+              (res.body.pkgStats.autoEndTime != 0) &&
+              (res.body.pkgStats.autoStartTime != null) &&
+              (res.body.pkgStats.autoStartTime != 0))
           {
             var elapsed: number;
             elapsed = (res.body.pkgStats.autoEndTime - res.body.pkgStats.autoStartTime) / 60000;
             this.orderHandler.details.assemblyTimeAuto = Math.floor(elapsed);
           }
-          this.orderHandler.details.assemblyTime = res.body.pkgStats.manualTime;
+          else if (res.body.pkgStats.manualTime > 0)
+          {
+            this.orderHandler.details.assemblyTime = res.body.pkgStats.manualTime;
+          }
+          else
+          {
+            this.orderHandler.details.assemblyTime = 0;
+          }
           this.service
             .update(
               'orders/update/' + this.orderHandler.details.idOrder,
@@ -227,6 +240,51 @@ export class OrderHandlerComponent implements OnInit {
             console.log(res);
              this.orderHandler.note = res.body.orderNotes;
       });
+  }
+
+  onDeliveryAttributeChange(event:any)
+  {
+    var sourceId: string;
+    var value: any;
+    var customerDelivery: CustomerDelivery;
+
+    console.log(event);
+    if (event.source != null)
+    {
+      sourceId = event.source._id;
+      value = event.source.value;
+    }
+    else if (event.srcElement != null)
+    {
+      sourceId = event.srcElement.id;
+      value = event.srcElement.value;
+    }
+    console.log(sourceId + " changed ");
+
+    this.service
+      .get(
+        "deliveries/order/" + this.orderHandler.details.idOrder
+      )
+      .subscribe(
+        (res: HttpResponse<any>)=>{  
+          console.log(res);
+          customerDelivery = res.body.customerDelivery;
+          customerDelivery.province = this.province;
+          this.service
+            .update(
+              "deliveries/delivery",
+              {
+                "customerDelivery" : customerDelivery
+              }
+            )
+
+            .subscribe(
+              (res: HttpResponse<any>)=>{  
+                console.log(res);
+              }
+            );
+        }
+      );
   }
 
   onAttributeChange(event:any)
@@ -276,6 +334,7 @@ export class OrderHandlerComponent implements OnInit {
       case "assemblyTime":
         this.orderUpdatePackagingStatistics("manual",  parseInt(value, 10));
         break;
+
     }
 
     this.service

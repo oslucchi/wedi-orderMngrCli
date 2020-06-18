@@ -226,7 +226,7 @@ table {
     justify-content: left;
 }
 
-.mat-column-boards {
+.mat-column-compositionBoards {
     word-wrap: break-word !important;
     white-space: unset !important;
     flex: 0 0 4% !important;
@@ -243,7 +243,7 @@ table {
     justify-content: center;
 }
 
-.mat-column-trays {
+.mat-column-compositionTrays {
     word-wrap: break-word !important;
     white-space: unset !important;
     flex: 0 0 4% !important;
@@ -260,7 +260,7 @@ table {
     justify-content: center;
 }
 
-.mat-column-design {
+.mat-column-compositionDesign {
     word-wrap: break-word !important;
     white-space: unset !important;
     flex: 0 0 4% !important;
@@ -277,7 +277,7 @@ table {
     justify-content: center;
 }
 
-.mat-column-accessories {
+.mat-column-compositionAccessories {
     word-wrap: break-word !important;
     white-space: unset !important;
     flex: 0 0 4% !important;

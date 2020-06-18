@@ -50,10 +50,10 @@ export class OrdersComponent implements OnInit {
     { def: 'palletHeigth', hide: true },
     { def: 'palletWeigth', hide: true },
     { def: 'empty', hide: true },
-    { def: 'boards', hide: false },
-    { def: 'trays', hide: false },
-    { def: 'design', hide: false },
-    { def: 'accessories', hide: false },
+    { def: 'compositionBoards', hide: false },
+    { def: 'compositionTrays', hide: false },
+    { def: 'compositionDesign', hide: false },
+    { def: 'compositionAccessories', hide: false },
     { def: 'empty1', hide: false }
    ];
    private detailsDisplayedColumns: any[] = [
@@ -131,33 +131,53 @@ export class OrdersComponent implements OnInit {
                 }
                 this.orderDetails = res.body.orderDetails;
 
-                item.accessories = 0;
-                item.boards = 0;
-                item.design = 0;
-                item.trays = 0;
+                item.compositionAccessories = 0;
+                item.compositionBoards = 0;
+                item.compositionDesign = 0;
+                item.compositionTrays = 0;
                 for(y = 0; y < this.orderDetails.length; y++)
                 {
                   switch(this.orderDetails[y].articleCategory)
                   {
                     case "A":
-                      item.accessories++;
+                      item.compositionAccessories++;
                       break;
                     case "BS":
-                      item.boards += (this.orderDetails[y].quantity / 
+                      item.compositionBoards += (this.orderDetails[y].quantity / 
                                       this.orderDetails[y].articleRateOfConversion);
                       break;
                     case "D":
-                      item.design++;
+                      item.compositionDesign++;
                       break;
                     case "T":
-                      item.trays++;
+                      item.compositionTrays++;
                       break;
                   }
                   if (this.orderDetails[y].sourceIssue)
                   {
-                    item.sourceIssue = "X";
+                    if (item.sourceIssue == null)
+                    {
+                      item.sourceIssue = "";
+                    }
+
+                    if (item.sourceIssue.indexOf("X") < 0)
+                    {
+                      item.sourceIssue += "X";
+                    }
                   }
                 }
+                this.service
+                  .update(
+                    "orders/update/" + item.idOrder,
+                    {
+                      "order" : item
+                    }
+                  )
+                  .subscribe(
+                    (res: HttpResponse<any>)=>{  
+                      console.log(res);
+                    }
+                  );
                 i++;
               }
           );

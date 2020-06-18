@@ -148,11 +148,11 @@
                         </mat-form-field>
                     </td>
                     <td>
-                        <div *ngIf="orderHandler.details.customerDeliveryProvince==''">
+                        <div *ngIf="orderHandler.details.customerDeliveryProvince==null">
                             <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                                 <input matInput id="customerDeliveryProvince"
-                                    [(ngModel)]="orderHandler.details.customerDeliveryProvince" 
-                                    (change)="onAttributeChange($event)"
+                                    [(ngModel)]="province" 
+                                    (change)="onDeliveryAttributeChange($event)"
                                     placeholder="PV">
                             </mat-form-field>
                         </div>

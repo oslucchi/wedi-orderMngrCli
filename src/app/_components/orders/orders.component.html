@@ -176,28 +176,28 @@
                                 {{ empty }}
                             </mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="boards">
+                        <ng-container matColumnDef="compositionBoards">
                             <mat-header-cell *matHeaderCellDef>B</mat-header-cell>
-                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightBoards':order.boards>0}">
-                                {{order.boards | number:'.0-0'}}
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightBoards':order.compositionBoards>0}">
+                                {{order.compositionBoards > 0 ? order.compositionBoards : " "}}
                             </mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="trays">
+                        <ng-container matColumnDef="compositionTrays">
                             <mat-header-cell *matHeaderCellDef>P</mat-header-cell>
-                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightTrays':order.trays>0}">
-                                {{(order.trays > 0 ? order.trays : " ")}}
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightTrays':order.compositionTrays>0}">
+                                {{(order.compositionTrays > 0 ? order.compositionTrays : " ")}}
                             </mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="design">
+                        <ng-container matColumnDef="compositionDesign">
                             <mat-header-cell *matHeaderCellDef>D</mat-header-cell>
-                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightDesign':order.design>0}">
-                                {{(order.design > 0 ? order.design : " ")}}
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightDesign':order.compositionDesign>0}">
+                                {{(order.compositionDesign > 0 ? order.compositionDesign : " ")}}
                             </mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="accessories">
+                        <ng-container matColumnDef="compositionAccessories">
                             <mat-header-cell *matHeaderCellDef>A</mat-header-cell>
-                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightAccessories':order.accessories>0}">
-                                {{(order.accessories > 0 ? order.accessories : " ")}}
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightAccessories':order.compositionAccessories>0}">
+                                {{(order.compositionAccessories > 0 ? order.compositionAccessories : " ")}}
                             </mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="empty1">

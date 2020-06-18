@@ -23,14 +23,10 @@ export class Orders {
     customerRefERP: string;
     customerDescription: string;
     customerDeliveryProvince: string;
-    boards: number;
-    trays: number;
-    design: number;
-    accessories: number;
-    sourceIssue: string;
     compositionBoards: number;
     compositionTrays: number;
     compositionDesign: number;
     compositionAccessories: number;
+    sourceIssue: string;
     orderValue: number;
 }
