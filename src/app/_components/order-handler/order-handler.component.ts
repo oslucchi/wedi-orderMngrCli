@@ -117,6 +117,12 @@ export class OrderHandlerComponent implements OnInit {
       if (this.orderList[i].idOrder == this.orderHandler.details.idOrder)
       {
         this.orderList[i].status = event.source.value;
+        switch(event.source.value)
+        {
+        case "SHI":
+          this.orderList[i].shipmentDate = new Date();
+          break;
+        }
         break;
       }
     }
