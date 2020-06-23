@@ -75,8 +75,6 @@ export class OrderHandlerComponent implements OnInit {
     { id: "DIR", des: "Consegna diretta", selected: false },
   ]
 
-  public province: string;
-
   constructor(private apiService: ApiService,
               private dialog: MatDialog) {
     this.service = apiService;
@@ -84,6 +82,56 @@ export class OrderHandlerComponent implements OnInit {
 
   ngOnInit()
   {
+  }
+
+  printLabels() {
+    var i: number;
+    var copies: number;
+    var notes: string;
+    var shipTo: string;
+    notes = this.orderHandler.customerDelivery.notes;
+    shipTo = this.orderHandler.details.customerDescription + 
+             ((notes != null) && (notes != "") ? "\n" + notes : "");
+
+    console.log("Priting labels: " + 
+                "shipTo: " + shipTo +
+                " - address: " + this.orderHandler.customerDelivery.address +
+                " - zipCityProvince:" + this.orderHandler.customerDelivery.zipCode + " " +
+                                     this.orderHandler.customerDelivery.city + " " +
+                                     this.orderHandler.customerDelivery.province +
+                " - forwarder: " + this.orderHandler.details.forwarder +
+                " - copies: " + copies);
+
+    switch(this.orderHandler.details.forwarder)
+    {
+      case "CES":
+        copies = 2;
+        break;
+      case "TWS":
+        copies = 1;
+        break;
+      default:
+        copies = 1;
+        break;
+    }
+    this.service
+    .post(
+      'utils/printLabel',
+      {
+        "shipTo" : shipTo,
+        "address" : this.orderHandler.customerDelivery.address,
+        "zipCityProvince" : this.orderHandler.customerDelivery.zipCode + " " +
+                            this.orderHandler.customerDelivery.city + " " +
+                            this.orderHandler.customerDelivery.province,
+        "forwarder" : this.orderHandler.details.forwarder,
+        "copies" : copies
+        }
+    )
+    .subscribe(
+      (res: HttpResponse<any>)=>{  
+        console.log(res);
+      }
+    );
   }
 
   openDialog() {
@@ -251,19 +299,15 @@ export class OrderHandlerComponent implements OnInit {
   onDeliveryAttributeChange(event:any)
   {
     var sourceId: string;
-    var value: any;
-    var customerDelivery: CustomerDelivery;
 
     console.log(event);
     if (event.source != null)
     {
       sourceId = event.source._id;
-      value = event.source.value;
     }
     else if (event.srcElement != null)
     {
       sourceId = event.srcElement.id;
-      value = event.srcElement.value;
     }
     console.log(sourceId + " changed ");
 
@@ -274,21 +318,25 @@ export class OrderHandlerComponent implements OnInit {
       .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
-          customerDelivery = res.body.customerDelivery;
-          customerDelivery.province = this.province;
-          this.service
-            .update(
-              "deliveries/delivery",
-              {
-                "customerDelivery" : customerDelivery
-              }
-            )
-
-            .subscribe(
-              (res: HttpResponse<any>)=>{  
-                console.log(res);
-              }
-            );
+          if ((res.body.customerDelivery.province == null) ||
+              (this.orderHandler.customerDelivery.province.trim().toUpperCase() != res.body.customerDelivery.province.trim().toUpperCase()))
+          {
+            this.orderHandler.customerDelivery.province = this.orderHandler.customerDelivery.province.trim().toUpperCase()
+            this.service
+              .update(
+                "deliveries/update",
+                {
+                  "customerDelivery" : this.orderHandler.customerDelivery
+                }
+              )
+              .subscribe(
+                (res: HttpResponse<any>)=>{
+                  this.orderHandler.details.customerDeliveryProvince = this.orderHandler.customerDelivery.province; 
+                  this.updateOrder();
+                  console.log(res);
+                }
+              );
+          }
         }
       );
   }
@@ -340,32 +388,34 @@ export class OrderHandlerComponent implements OnInit {
       case "assemblyTime":
         this.orderUpdatePackagingStatistics("manual",  parseInt(value, 10));
         break;
-
     }
-
-    this.service
-      .update(
-        'orders/update/' + this.orderHandler.details.idOrder,
-        {
-          "order": this.orderHandler.details,
-          "buyValue" : this.orderValue | 0
-        }
-      )
-      .subscribe(
-          (res: HttpResponse<any>)=>{  
-            console.log(res);
-            res.body.order.preparationDate = new Date(res.body.order.preparationDate);
-            res.body.order.shipmentDate = new Date(res.body.order.shipmentDate);
-            this.orderList.forEach(item  => 
-              {
-                if (item.idOrder == res.body.order.idOrder)
-                {
-                  item = res.body.order;
-                }
-              }
-            )
-            this.orderHandler.details = res.body.order;
-      });
+    this.updateOrder();
   }
 
+  updateOrder()
+  {
+    this.service
+    .update(
+      'orders/update/' + this.orderHandler.details.idOrder,
+      {
+        "order": this.orderHandler.details,
+        "buyValue" : this.orderValue | 0
+      }
+    )
+    .subscribe(
+        (res: HttpResponse<any>)=>{  
+          console.log(res);
+          res.body.order.preparationDate = new Date(res.body.order.preparationDate);
+          res.body.order.shipmentDate = new Date(res.body.order.shipmentDate);
+          this.orderList.forEach(item  => 
+            {
+              if (item.idOrder == res.body.order.idOrder)
+              {
+                item = res.body.order;
+              }
+            }
+          )
+          this.orderHandler.details = res.body.order;
+    });
+  }
 }

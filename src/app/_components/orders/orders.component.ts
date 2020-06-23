@@ -121,6 +121,7 @@ export class OrdersComponent implements OnInit {
                   this.orderHandler = new OrderHandler;
                   this.orderHandler.details = item;
                   this.orderHandler.note = res.body.orderNotes;
+                  this.orderHandler.customerDelivery = res.body.customerDelivery;
                   this.orderValue = 0;
                   res.body.orderDetails.forEach( item => {
                     this.orderValue += 
@@ -294,6 +295,7 @@ export class OrdersComponent implements OnInit {
           this.dataSourceDetails = new MatTableDataSource<OrderDetails>(this.orderDetails);
           this.orderHandler.note = res.body.orderNotes;
           this.orderHandler.shipments = res.body.orderShipments;
+          this.orderHandler.customerDelivery = res.body.customerDelivery;
           this.orderValue = 0;
           this.orderDetails.forEach( item => {
             this.orderValue += res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *
