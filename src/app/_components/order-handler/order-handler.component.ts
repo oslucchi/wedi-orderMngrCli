@@ -100,6 +100,7 @@ export class OrderHandlerComponent implements OnInit {
                                      this.orderHandler.customerDelivery.city + " " +
                                      this.orderHandler.customerDelivery.province +
                 " - forwarder: " + this.orderHandler.details.forwarder +
+                " - orderRefERP" + this.orderHandler.details.orderRef.substring(2) +
                 " - copies: " + copies);
 
     switch(this.orderHandler.details.forwarder)
@@ -108,7 +109,7 @@ export class OrderHandlerComponent implements OnInit {
         copies = 2;
         break;
       case "TWS":
-        copies = 1;
+        copies = (this.orderHandler.details.numberOfItemsToShip > 0 ? this.orderHandler.details.numberOfItemsToShip : 1);
         break;
       default:
         copies = 1;
@@ -124,6 +125,7 @@ export class OrderHandlerComponent implements OnInit {
                             this.orderHandler.customerDelivery.city + " " +
                             this.orderHandler.customerDelivery.province,
         "forwarder" : this.orderHandler.details.forwarder,
+        "orderRefERP" : this.orderHandler.details.orderRef.substring(2),
         "copies" : copies
         }
     )
@@ -417,5 +419,10 @@ export class OrderHandlerComponent implements OnInit {
           )
           this.orderHandler.details = res.body.order;
     });
+  }
+
+  orderInStatus(statusCheck: string[])
+  {
+    return statusCheck.includes(this.orderHandler.details.status);
   }
 }
