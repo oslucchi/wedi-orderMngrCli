@@ -421,8 +421,11 @@ export class OrderHandlerComponent implements OnInit {
     });
   }
 
-  orderInStatus(statusCheck: string[])
+  attributeInSet(stringArray: string[], value: string)
   {
-    return statusCheck.includes(this.orderHandler.details.status);
+    var isIn: boolean;
+
+    isIn = stringArray.includes(value);
+    return isIn;
   }
 }

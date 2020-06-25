@@ -1,6 +1,6 @@
 <table>
     <tr style="vertical-align: top;">
-        <td colspan="3">
+        <td colspan="4">
             <p style='text-align: center; font-weight:bold'>
                 <mat-label>Ordine</mat-label>
                 &nbsp;
@@ -36,99 +36,96 @@
                 </mat-select>
             </mat-form-field>
         </td>
-        <td>
-            <mat-form-field appearance="fill" rows="1">
+        <td colspan="2">
+            <mat-form-field appearance="fill" rows="1" style="width: 320px !important">
                 <mat-label style='font-size: 11px;'>Note</mat-label>
                 <textarea matInput [(ngModel)]="orderHandler.note.note" 
                                 (change)="onOrderNoteChange($event)"
-                                style="line-height: 12px !important;max-height: 24px !important;"></textarea>
+                                style="line-height: 17px !important;max-height: 17px !important; resize: none">
+                </textarea>
             </mat-form-field>
         </td>
     </tr>
     <tr>
         <td colspan="2">
             <table>
-                <tr style='text-align: left;'>
-                    <td>
-                        <div *ngIf="orderHandler.details.forwarder=='CES'">
-                            <mat-label>Dimensioni</mat-label>
-                        </div>
-                        <div *ngIf="orderHandler.details.forwarder=='TWS'">
-                            <mat-label>Numero colli</mat-label>
-                        </div>
-                    </td>
-                    <td colspan="4">
-                        <div *ngIf="orderHandler.details.forwarder=='CES'">
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <mat-label>Lun</mat-label>
-                                <input matInput id="palletLength"
-                                        [(ngModel)]="orderHandler.details.palletLength" 
-                                        (change)="onAttributeChange($event)"
-                                        placeholder="Larghezza"
-                                        maxlength="3">
-                            </mat-form-field>
-                            &nbsp;
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <mat-label>Lar</mat-label>
-                                <input matInput id="palletWidth"
-                                        [(ngModel)]="orderHandler.details.palletWidth" 
-                                        (change)="onAttributeChange($event)"
-                                        placeholder="Larghezza"
-                                        maxlength="3">
-                            </mat-form-field>
-                            &nbsp;
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <mat-label>Alt</mat-label>
-                                <input matInput id="palletHeigth"
-                                       [(ngModel)]="orderHandler.details.palletHeigth" 
-                                       (change)="onAttributeChange($event)"
-                                       placeholder="Altezza"
-                                       maxlength="3">
-                            </mat-form-field>
-                            &nbsp;
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <mat-label>Kg</mat-label>
-                                <input matInput id="palletWeigth"
-                                       [(ngModel)]="orderHandler.details.palletWeigth" 
-                                       (change)="onAttributeChange($event)"
-                                       placeholder="Peso"
-                                       maxlength="3">
-                            </mat-form-field>
-                        </div>
-                        <div *ngIf="orderHandler.details.forwarder=='TWS'">
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <input matInput id="numberOfItemsToShip"
-                                       [(ngModel)]="orderHandler.details.numberOfItemsToShip" 
-                                       (change)="onAttributeChange($event)"
-                                       placeholder="Colli">
-                            </mat-form-field>
-                        </div>
-                    </td>
-                    <td>
-                        <div *ngIf="orderHandler.details.status=='RDY'">
-                            <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                                <input matInput id="transportDocNum"
-                                    [(ngModel)]="orderHandler.details.transportDocNum" 
-                                    (change)="onAttributeChange($event)"
-                                    placeholder="Bolla">
-                            </mat-form-field>
-                        </div>
-                    </td>
-                </tr>
-                <tr *ngIf="orderHandler.details.forwarder!='CLI'">
-                    <td>
-                        <mat-label>Assicurazione</mat-label>
+                <tr style='text-align: left;' 
+                    *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status) && (orderHandler.details.forwarder=='CES') ">          
+                    <td style="width:100px">
+                        <mat-label>Dimensioni</mat-label>
                     </td>
                     <td>
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
-                            <input matInput id="insuranceCost"
-                                    [(ngModel)]="orderHandler.details.insuranceCost" 
+                            <mat-label>Lun</mat-label>
+                            <input matInput id="palletLength"
+                                    [(ngModel)]="orderHandler.details.palletLength" 
                                     (change)="onAttributeChange($event)"
-                                    maxlength="5">
+                                    placeholder="Larghezza"
+                                    maxlength="3">
                         </mat-form-field>
                     </td>
                     <td>
-                        <mat-label>Spedizione</mat-label>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Lar</mat-label>
+                            <input matInput id="palletWidth"
+                                    [(ngModel)]="orderHandler.details.palletWidth" 
+                                    (change)="onAttributeChange($event)"
+                                    placeholder="Larghezza"
+                                    maxlength="3">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Alt</mat-label>
+                            <input matInput id="palletHeigth"
+                                [(ngModel)]="orderHandler.details.palletHeigth" 
+                                (change)="onAttributeChange($event)"
+                                placeholder="Altezza"
+                                maxlength="3">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Kg</mat-label>
+                            <input matInput id="palletWeigth"
+                                [(ngModel)]="orderHandler.details.palletWeigth" 
+                                (change)="onAttributeChange($event)"
+                                placeholder="Peso"
+                                maxlength="3">
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr style='text-align: left;' 
+                    *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status) && attributeInSet(['TWS', 'CLI'], orderHandler.details.forwarder) ">
+                    <td style="width:100px">
+                        <mat-label>Numero colli</mat-label>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <input matInput id="numberOfItemsToShip"
+                                    [(ngModel)]="orderHandler.details.numberOfItemsToShip" 
+                                    (change)="onAttributeChange($event)"
+                                    placeholder="Colli">
+                        </mat-form-field>
+                    </td>
+                    <td style='width: 45px'>
+                        &nbsp;
+                    </td>
+                    <td style='width: 45px'>
+                        &nbsp;
+                    </td>
+                    <td style='width: 45px'>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr *ngIf="!attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
+                    <td colspan="5" style='width: 280px'>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status) && orderHandler.details.forwarder!='CLI'">
+                    <td >
+                        <mat-label style="width:100px">Spedizione</mat-label>
                     </td>
                     <td style='vertical-align: center;'>
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
@@ -138,13 +135,31 @@
                                     (change)="onAttributeChange($event)"
                                     maxlength="7">
                         </mat-form-field>
-                        &nbsp;
-                        <mat-form-field appearance="fill" style="width:50px !important; text-align: right;">
+                    </td>
+                    <td style='vertical-align: center;'>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Vet</mat-label>
                             <input matInput id="forwarderCost"
                                     [(ngModel)]="orderHandler.details.forwarderCost" 
                                     (change)="onAttributeChange($event)"
                                     maxlength="7">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Ass</mat-label>
+                            <input matInput id="insuranceCost"
+                                    [(ngModel)]="orderHandler.details.insuranceCost" 
+                                    (change)="onAttributeChange($event)"
+                                    maxlength="5">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>DDT</mat-label>
+                            <input matInput id="transportDocNum"
+                                [(ngModel)]="orderHandler.details.transportDocNum" 
+                                (change)="onAttributeChange($event)">
                         </mat-form-field>
                     </td>
                     <td>
@@ -155,7 +170,39 @@
                                 (change)="onDeliveryAttributeChange($event)">
                         </mat-form-field>
                     </td>
-
+<!--
+    
+-->
+                </tr>
+                <tr *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status) && orderHandler.details.forwarder=='CLI'">
+                    <td >
+                        <mat-label style="width:100px">Spedizione</mat-label>
+                    </td>
+                     <td style='width:45px;'>
+                        &nbsp;
+                    </td>
+                    <td style='width:45px;'>
+                        &nbsp;
+                    </td>
+                    <td style='width:45px;'>
+                        &nbsp;
+                    </td>
+                    <td style='width:45px;'>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>DDT</mat-label>
+                            <input matInput id="transportDocNum"
+                                [(ngModel)]="orderHandler.details.transportDocNum" 
+                                (change)="onAttributeChange($event)">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
+                            <mat-label>Prov</mat-label>
+                            <input matInput id="province"
+                                [(ngModel)]="orderHandler.customerDelivery.province" 
+                                (change)="onDeliveryAttributeChange($event)">
+                        </mat-form-field>
+                    </td>
                 </tr>
             </table>
         </td>
@@ -200,8 +247,11 @@
                 </tr>
             </table>
          </td>
-         <td>
+         <td *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
             <button mat-button id="dialog" (click)="printLabels()">Etichette</button>
+         </td>
+         <td *ngIf="!attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
+            &nbsp;
          </td>
     </tr>
 </table>
