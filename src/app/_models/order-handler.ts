@@ -6,17 +6,17 @@ import { CustomerDelivery } from './customer-delivery';
 
 export class OrderHandler {
   public status: StatusItem[] = [
-    {id: "SYS", des: "Inserito a sistema", selected: false},
-    {id: "ONH", des: "Sospeso", selected: false},
-    {id: "CON", des: "Confermato", selected: false},
-    {id: "COE", des: "Confermato con eccezione", selected: false},
-    {id: "PRE", des: "In preparazione", selected: false},
-    {id: "RDY", des: "Pronto", selected: false},
-    {id: "SHI", des: "Spedito", selected: false}
+    {id: "SYS", des: "Inserito a sistema", selected: false, disabled: true},
+    {id: "CON", des: "Confermato", selected: false, disabled: true},
+    {id: "COE", des: "Confermato con eccezione", selected: false, disabled: true},
+    {id: "PRE", des: "In preparazione", selected: false, disabled: true},
+    {id: "RDY", des: "Pronto", selected: false, disabled: true},
+    {id: "SHI", des: "Spedito", selected: false, disabled: true}
   ];
 
   public details: Orders = new Orders;
   public note: OrderNotes = new OrderNotes;
   public shipments: OrderShipments = new OrderShipments;
   public customerDelivery: CustomerDelivery = new CustomerDelivery;
+  public statusPre: string;
 }

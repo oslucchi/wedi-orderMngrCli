@@ -14,6 +14,7 @@ import { MatSort } from '@angular/material/sort';
 import { OrderHandler } from '@app/_models/order-handler';
 import { OrderShipments } from '@app/_models/order-shipments';
 import { Articles } from '@app/_models/articles';
+import { StatusItem } from '@app/_models/status-item';
 
 @Component({
   selector: 'app-orders',
@@ -35,6 +36,16 @@ export class OrdersComponent implements OnInit {
   private service: ApiService;
   private cookieService: CookieService;
 
+  public status: StatusItem[] = [
+    { id: "SYS", des: "Inserito a sistema", selected: false, disabled: true },
+    { id: "ONH", des: "Sospeso", selected: false, disabled: true },
+    { id: "CON", des: "Confermato", selected: false, disabled: true },
+    { id: "COE", des: "Confermato con eccezione", selected: false, disabled: true },
+    { id: "PRE", des: "In preparazione", selected: false, disabled: true },
+    { id: "RDY", des: "Pronto", selected: false, disabled: true },
+    { id: "SHI", des: "Spedito", selected: false, disabled: true },
+    { id: "INV", des: "Fatturato", selected: false, disabled: true }
+  ]
 
   private ordersDisplayedColumns: any[] = [
     { def: 'status', hide: false }, 
@@ -122,6 +133,8 @@ export class OrdersComponent implements OnInit {
                   this.orderHandler.details = item;
                   this.orderHandler.note = res.body.orderNotes;
                   this.orderHandler.customerDelivery = res.body.customerDelivery;
+                  this.orderHandler.statusPre = this.orderHandler.details.status;
+                  this.statusTransitionEval(item.status);
                   this.orderValue = 0;
                   res.body.orderDetails.forEach( item => {
                     this.orderValue += 
@@ -264,6 +277,56 @@ export class OrdersComponent implements OnInit {
     this.getOrdersBasedOnFilters();
   }
 
+  statusTransitionEval(status: string)
+  {
+    this.status.find(x => x.id == "ONH").disabled = true;
+    this.status.find(x => x.id == "PRE").disabled = true;
+    this.status.find(x => x.id == "SYS").disabled = true;
+    this.status.find(x => x.id == "CON").disabled = true;
+    this.status.find(x => x.id == "COE").disabled = true;
+    this.status.find(x => x.id == "RDY").disabled = true;
+    this.status.find(x => x.id == "SHI").disabled = true;
+    this.status.find(x => x.id == "INV").disabled = true;
+    
+    switch(status)
+    {
+      case "SYS":
+        this.status.find(x => x.id == "ONH").disabled = false;
+        this.status.find(x => x.id == "CON").disabled = false;
+        this.status.find(x => x.id == "COE").disabled = false;
+        break;
+
+      case "ONH":
+        this.status.find(x => x.id == "SYS").disabled = false;
+        this.status.find(x => x.id == "CON").disabled = false;
+        this.status.find(x => x.id == "COE").disabled = false;
+        break;
+
+      case "CON":
+      case "COE":
+        this.status.find(x => x.id == "ONH").disabled = false;
+        this.status.find(x => x.id == "PRE").disabled = false;
+        break;
+
+      case "PRE":
+        this.status.find(x => x.id == "RDY").disabled = false;
+        break;
+
+      case "RDY":
+        this.status.find(x => x.id == "SHI").disabled = false;
+        break;
+
+      case "SHI":
+        this.status.find(x => x.id == "INV").disabled = false;
+        break;
+      }
+  }
+
+  resetOrderStatus($event: any)
+  {
+    this.statusTransitionEval($event.event);
+  }
+
   listOrderDetails(order: Orders) 
   {
     var i: number;
@@ -296,6 +359,9 @@ export class OrdersComponent implements OnInit {
           this.orderHandler.note = res.body.orderNotes;
           this.orderHandler.shipments = res.body.orderShipments;
           this.orderHandler.customerDelivery = res.body.customerDelivery;
+          this.orderHandler.statusPre = this.orderHandler.details.status;
+          this.statusTransitionEval(order.status);
+
           this.orderValue = 0;
           this.orderDetails.forEach( item => {
             this.orderValue += res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *

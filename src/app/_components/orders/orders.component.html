@@ -110,7 +110,9 @@
                                    [orderDetails]="orderDetails"
                                    [orderValue]="orderValue"
                                    [profile]="profile"
-                                   (getOrdersBasedOnFilters)="getOrdersBasedOnFilters()" >
+                                   [status]="status"
+                                   (getOrdersBasedOnFilters)="getOrdersBasedOnFilters()"
+                                   (resetOrderStatus)="resetOrderStatus($event)" >
                 </app-order-handler>
             </td>
         </tr>

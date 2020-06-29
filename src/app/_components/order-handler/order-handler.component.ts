@@ -15,6 +15,7 @@ import { formatDate } from '@angular/common';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { MsgBoxComponent } from '@app/_components/msg-box/msg-box.component';
 import { CustomerDelivery } from '@app/_models/customer-delivery';
+import { NgModel } from '@angular/forms';
 
 export const PICK_FORMATS = {
   parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
@@ -53,21 +54,13 @@ export class OrderHandlerComponent implements OnInit {
   @Input() orderDetails: OrderDetails[];
   @Input() profile: UserProfile;
   @Input() orderValue: number;
+  @Input() status: StatusItem[];
 
   @Output("getOrdersBasedOnFilters") getOrdersBasedOnFilters: EventEmitter<any> = new EventEmitter();
+  @Output("resetOrderStatus") resetOrderStatus: EventEmitter<any> = new EventEmitter();
   
   private service: ApiService;
   
-  public status: StatusItem[] = [
-    { id: "SYS", des: "Inserito a sistema", selected: false },
-    { id: "ONH", des: "Sospeso", selected: false },
-    { id: "CON", des: "Confermato", selected: false },
-    { id: "COE", des: "Confermato con eccezione", selected: false },
-    { id: "PRE", des: "In preparazione", selected: false },
-    { id: "RDY", des: "Pronto", selected: false },
-    { id: "SHI", des: "Spedito", selected: false }
-  ]
-
   public forwarder: ListItem[] = [
     { id: "CES", des: "CESPED", selected: false },
     { id: "TWS", des: "TWS - Collettame", selected: false },
@@ -150,7 +143,7 @@ export class OrderHandlerComponent implements OnInit {
     dialogConfig.data = {
       id: 1,
       title: 'prova',
-      message: 'Vuoi farti una pippa?'
+      message: 'funziona?'
     };
     // dialogConfig.position = {
     //   top: '100',
@@ -166,6 +159,54 @@ export class OrderHandlerComponent implements OnInit {
   {
     var i: number;
     var y: number;
+    var reject: boolean;
+    var rejectMsg: string;
+
+    rejectMsg = "";
+    if ((event.source.value == "CON") || (event.source.value == "COE"))
+    {
+      if ((this.orderHandler.details.forwarder == null) || 
+          (this.orderHandler.details.forwarder == ""))
+      {
+        rejectMsg = "E' necessario specificare il trasportatore";
+      }
+    }
+    else if (event.source.value == "RDY")
+    {
+      if ((this.orderHandler.details.transportDocNum == null) || 
+          (this.orderHandler.details.transportDocNum == ""))
+      {
+        rejectMsg = "Il campo DDT deve essere popolato";
+      }
+
+      if ((this.orderHandler.details.forwarder == "CES") && 
+          ((this.orderHandler.details.palletLength == 0) ||
+           (this.orderHandler.details.palletWidth == 0) ||
+           (this.orderHandler.details.palletHeigth == 0) ||
+           (this.orderHandler.details.palletWeigth == 0) ||
+           (this.orderHandler.details.forwarderCost == 0) ||
+           (this.orderHandler.details.customerDeliveryProvince == null) ||
+           (this.orderHandler.details.customerDeliveryProvince == "")))
+      {
+        rejectMsg = "I dati della spedizione devono essere popolati";
+      }
+      if ((this.orderHandler.details.forwarder == "TWS") && 
+          ((this.orderHandler.details.numberOfItemsToShip == 0) ||
+          (this.orderHandler.details.forwarderCost == 0) ||
+          (this.orderHandler.details.customerDeliveryProvince == null) ||
+           (this.orderHandler.details.customerDeliveryProvince == "")))
+      {
+        rejectMsg = "Bisonga specificare il numero di colli spediti";
+      }
+    }
+
+    if (rejectMsg != "")
+    {
+      window.alert(rejectMsg +  " perche' l'ordine possa essere cambiato di stato");
+      this.orderHandler.details.status = this.orderHandler.statusPre;
+      event.source.writeValue(this.orderHandler.statusPre);
+      return;
+    }
 
     for(i = 0; i < this.orderList.length; i++)
     {
@@ -181,6 +222,9 @@ export class OrderHandlerComponent implements OnInit {
         break;
       }
     }
+    this.resetOrderStatus.emit({event: event.source.value});
+    this.orderHandler.statusPre = event.source.value;
+
     console.log(this.orderHandler.details);
 
     this.service
@@ -306,6 +350,7 @@ export class OrderHandlerComponent implements OnInit {
   onDeliveryAttributeChange(event:any)
   {
     var sourceId: string;
+    var province: string;
 
     console.log(event);
     if (event.source != null)
@@ -315,8 +360,30 @@ export class OrderHandlerComponent implements OnInit {
     else if (event.srcElement != null)
     {
       sourceId = event.srcElement.id;
+      province = event.srcElement.value;
     }
     console.log(sourceId + " changed ");
+    if (sourceId == "province")
+    {
+      this.service
+      .post(
+        "orders/shipmentCost",
+        {
+          "forwarder" : this.orderHandler.details.forwarder, 
+          "province" : province,
+          "len" : this.orderHandler.details.palletLength,
+          "width" : this.orderHandler.details.palletWidth,
+          "height" : this.orderHandler.details.palletHeigth,
+          "weight" : this.orderHandler.details.palletWeigth
+        }
+      )
+      .subscribe(
+        (res: HttpResponse<any>)=>{  
+          console.log(res);
+          this.orderHandler.details.forwarderCost = res.body.shipmentCost;
+        }
+      )
+    }
 
     this.service
       .get(

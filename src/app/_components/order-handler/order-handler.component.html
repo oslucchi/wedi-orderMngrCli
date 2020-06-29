@@ -19,7 +19,7 @@
                 <mat-select [(ngModel)]="orderHandler.details.status" 
                             (selectionChange)="onOrderStatusChange($event)">
                     <div *ngFor="let item of status;" >
-                        <mat-option [value]="item.id" >{{ item.des }}</mat-option>
+                        <mat-option [value]="item.id" [disabled]="item.disabled" >{{ item.des }}</mat-option>
                     </div>
                 </mat-select>
             </mat-form-field>
