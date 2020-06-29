@@ -93,6 +93,21 @@ export class OrderHandlerComponent implements OnInit {
     shipTo = this.orderHandler.details.customerDescription + 
              ((notes != null) && (notes != "") ? "\n" + notes : "");
 
+    if (this.orderHandler.details.numberOfItemsToShip <= 0)
+    {
+      this.orderHandler.details.numberOfItemsToShip = 1;
+    }
+
+    switch(this.orderHandler.details.forwarder)
+    {
+      case "CES":
+        copies = 2;
+        break;
+      default:
+        copies = 1;
+        break;
+    }
+
     console.log("Priting labels: " + 
                 "shipTo: " + shipTo +
                 " - address: " + this.orderHandler.customerDelivery.address +
@@ -101,20 +116,9 @@ export class OrderHandlerComponent implements OnInit {
                                      this.orderHandler.customerDelivery.province +
                 " - forwarder: " + this.orderHandler.details.forwarder +
                 " - orderRefERP" + this.orderHandler.details.orderRef.substring(2) +
+                " - numberOfItems" + this.orderHandler.details.numberOfItemsToShip +
                 " - copies: " + copies);
 
-    switch(this.orderHandler.details.forwarder)
-    {
-      case "CES":
-        copies = 2;
-        break;
-      case "TWS":
-        copies = (this.orderHandler.details.numberOfItemsToShip > 0 ? this.orderHandler.details.numberOfItemsToShip : 1);
-        break;
-      default:
-        copies = 1;
-        break;
-    }
     this.service
     .post(
       'utils/printLabel',
@@ -126,6 +130,7 @@ export class OrderHandlerComponent implements OnInit {
                             this.orderHandler.customerDelivery.province,
         "forwarder" : this.orderHandler.details.forwarder,
         "orderRefERP" : this.orderHandler.details.orderRef.substring(2),
+        "numberOfItems" : this.orderHandler.details.numberOfItemsToShip,
         "copies" : copies
         }
     )
@@ -424,8 +429,22 @@ export class OrderHandlerComponent implements OnInit {
   attributeInSet(stringArray: string[], value: string)
   {
     var isIn: boolean;
-
-    isIn = stringArray.includes(value);
+    isIn = false;
+    try {
+      isIn = stringArray.includes(value);
+    }
+    catch(err) {
+      console.log(err.message);
+      var i: number;
+      for( i = 0; i < stringArray.length; i++)
+      {
+        if (stringArray[i].localeCompare(value))
+        {
+          isIn = true;
+          break;
+        }
+      }
+    }
     return isIn;
   }
 }
