@@ -145,53 +145,56 @@ export class OrdersComponent implements OnInit {
                 }
                 this.orderDetails = res.body.orderDetails;
 
-                item.compositionAccessories = 0;
-                item.compositionBoards = 0;
-                item.compositionDesign = 0;
-                item.compositionTrays = 0;
-                for(y = 0; y < this.orderDetails.length; y++)
+                if ((item.compositionAccessories == 0) &&
+                    (item.compositionBoards == 0) &&
+                    (item.compositionDesign == 0) &&
+                    (item.compositionTrays == 0))
                 {
-                  switch(this.orderDetails[y].articleCategory)
+                  for(y = 0; y < this.orderDetails.length; y++)
                   {
-                    case "A":
-                      item.compositionAccessories++;
-                      break;
-                    case "BS":
-                      item.compositionBoards += (this.orderDetails[y].quantity / 
-                                      this.orderDetails[y].articleRateOfConversion);
-                      break;
-                    case "D":
-                      item.compositionDesign++;
-                      break;
-                    case "T":
-                      item.compositionTrays++;
-                      break;
-                  }
-                  if (this.orderDetails[y].sourceIssue)
-                  {
-                    if (item.sourceIssue == null)
+                    switch(this.orderDetails[y].articleCategory)
                     {
-                      item.sourceIssue = "";
+                      case "A":
+                      case "TG":
+                        item.compositionAccessories++;
+                        break;
+                      case "BS":
+                        item.compositionBoards += (this.orderDetails[y].quantity / 
+                                        this.orderDetails[y].articleRateOfConversion);
+                        break;
+                      case "D":
+                        item.compositionDesign++;
+                        break;
+                      case "T":
+                        item.compositionTrays++;
+                        break;
                     }
+                    if (this.orderDetails[y].sourceIssue)
+                    {
+                      if (item.sourceIssue == null)
+                      {
+                        item.sourceIssue = "";
+                      }
 
-                    if (item.sourceIssue.indexOf("X") < 0)
-                    {
-                      item.sourceIssue += "X";
+                      if (item.sourceIssue.indexOf("X") < 0)
+                      {
+                        item.sourceIssue += "X";
+                      }
                     }
                   }
+                  this.service
+                    .update(
+                      "orders/update/" + item.idOrder,
+                      {
+                        "order" : item
+                      }
+                    )
+                    .subscribe(
+                      (res: HttpResponse<any>)=>{  
+                        console.log(res);
+                      }
+                    );
                 }
-                this.service
-                  .update(
-                    "orders/update/" + item.idOrder,
-                    {
-                      "order" : item
-                    }
-                  )
-                  .subscribe(
-                    (res: HttpResponse<any>)=>{  
-                      console.log(res);
-                    }
-                  );
                 i++;
               }
           );
@@ -306,6 +309,10 @@ export class OrdersComponent implements OnInit {
       case "COE":
         this.status.find(x => x.id == "ONH").disabled = false;
         this.status.find(x => x.id == "PRE").disabled = false;
+        if (status == "COE")
+        {
+          this.status.find(x => x.id == "CON").disabled = false;
+        }
         break;
 
       case "PRE":
