@@ -58,8 +58,8 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Lun</mat-label>
                             <input matInput id="palletLength"
-                                    [(ngModel)]="orderHandler.details.palletLength" 
-                                    (change)="onAttributeChange($event)"
+                                    [(ngModel)]="orderHandler.shipments[0].palletLength" 
+                                    (change)="onShipmentAttributeChange($event)"
                                     placeholder="Larghezza"
                                     maxlength="3">
                         </mat-form-field>
@@ -68,8 +68,8 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Lar</mat-label>
                             <input matInput id="palletWidth"
-                                    [(ngModel)]="orderHandler.details.palletWidth" 
-                                    (change)="onAttributeChange($event)"
+                                    [(ngModel)]="orderHandler.shipments[0].palletWidth" 
+                                    (change)="onShipmentAttributeChange($event)"
                                     placeholder="Larghezza"
                                     maxlength="3">
                         </mat-form-field>
@@ -78,8 +78,8 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Alt</mat-label>
                             <input matInput id="palletHeigth"
-                                [(ngModel)]="orderHandler.details.palletHeigth" 
-                                (change)="onAttributeChange($event)"
+                                [(ngModel)]="orderHandler.shipments[0].palletHeigth" 
+                                (change)="onShipmentAttributeChange($event)"
                                 placeholder="Altezza"
                                 maxlength="3">
                         </mat-form-field>
@@ -88,11 +88,14 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Kg</mat-label>
                             <input matInput id="palletWeigth"
-                                [(ngModel)]="orderHandler.details.palletWeigth" 
-                                (change)="onAttributeChange($event)"
+                                [(ngModel)]="orderHandler.shipments[0].palletWeigth" 
+                                (change)="onShipmentAttributeChange($event)"
                                 placeholder="Peso"
                                 maxlength="3">
                         </mat-form-field>
+                    </td>
+                    <td>
+                        <button mat-button id="addShipment" (click)="addShipment()">+</button>
                     </td>
                 </tr>
                 <tr style='text-align: left;' 
@@ -103,7 +106,7 @@
                     <td>
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <input matInput id="numberOfItemsToShip"
-                                    [(ngModel)]="orderHandler.details.numberOfItemsToShip" 
+                                    [(ngModel)]="orderHandler.shipments[0].numberOfItemsToShip" 
                                     (change)="onAttributeChange($event)"
                                     placeholder="Colli">
                         </mat-form-field>
@@ -117,9 +120,12 @@
                     <td style='width: 45px'>
                         &nbsp;
                     </td>
+                    <td style='width: 45px'>
+                        &nbsp;
+                    </td>
                 </tr>
                 <tr *ngIf="!attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
-                    <td colspan="5" style='width: 280px'>
+                    <td colspan="6" style='width: 325px'>
                         &nbsp;
                     </td>
                 </tr>
@@ -131,7 +137,7 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Cli</mat-label>
                             <input matInput id="clientCost"
-                                    [(ngModel)]="orderHandler.details.clientCost" 
+                                    [(ngModel)]="orderHandler.shipments[0].clientCost" 
                                     (change)="onAttributeChange($event)"
                                     maxlength="7">
                         </mat-form-field>
@@ -140,8 +146,7 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Vet</mat-label>
                             <input matInput id="forwarderCost"
-                                    [(ngModel)]="orderHandler.details.forwarderCost" 
-                                    (change)="onAttributeChange($event)"
+                                    [(ngModel)]="orderHandler.shipments[0].forwarderCost" 
                                     maxlength="7">
                         </mat-form-field>
                     </td>
@@ -247,11 +252,26 @@
                 </tr>
             </table>
          </td>
-         <td *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
-            <button mat-button id="dialog" (click)="printLabels()">Etichette</button>
-         </td>
-         <td *ngIf="!attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
-            &nbsp;
-         </td>
+            <table>
+                <tr style='vertical-align: middle;'>
+                    <td *ngIf="attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
+                        <button mat-button id="printLab" (click)="printLabels()">Etichette</button>
+                     </td>
+                     <td *ngIf="!attributeInSet(['RDY', 'PRE'], orderHandler.details.status)">
+                        &nbsp;
+                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr style='vertical-align: middle;'>
+                    <td *ngIf="attributeInSet(['RDY'], orderHandler.details.status)">
+                        <button mat-button id="mailPick" (click)="mailPickup()">Mail Pick</button>
+                     </td>
+                     <td *ngIf="!attributeInSet(['RDY'], orderHandler.details.status)">
+                        &nbsp;
+                     </td>
+                </tr>
+            </table>
     </tr>
 </table>

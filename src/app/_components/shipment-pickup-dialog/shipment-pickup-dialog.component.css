@@ -1,0 +1,183 @@
+.mat-column-selected {
+    width: 3% !important;
+}
+
+.mat-column-customer {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 24% !important;
+    width: 24% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-address {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 34% !important;
+    width: 34% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    padding: 5px 5px 0px 0px;
+}
+
+.mat-column-province {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: center;
+    justify-content: flex-end;      
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-length {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;
+    justify-content: flex-end;      
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-length {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-width {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-heigth {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-weigth {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;    
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-ddt {
+    word-wrap: break-word !important;
+    word-break: break-word;
+    white-space: unset !important;
+    flex: 0 0 3% !important;
+    width: 3% !important;
+    overflow-wrap: break-word;
+    text-align: right;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-column-note {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 10% !important;
+    width: 10% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    text-align: right;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+.mat-column-insurance {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+    width: 8% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    text-align: center;
+    justify-content: flex-end;  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+.mat-header-cell.mat-column-note {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mat-header-cell.mat-column-insurance {
+    flex-direction: column;
+    justify-content: center;
+}

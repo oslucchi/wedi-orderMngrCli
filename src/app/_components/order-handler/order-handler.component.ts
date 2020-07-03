@@ -1,21 +1,18 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Orders } from "@app/_models/orders";
 import { ApiService } from '@app/_services/api.service';
-import { OrderNotes } from "@app/_models/order-notes";
 import { OrderHandler } from '@app/_models/order-handler';
 import { OrderDetails } from '@app/_models/order-details';
-import { MatSelectChange, NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
+import { MatSelectChange, NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MatTableDataSource } from '@angular/material';
 import { HttpResponse } from '@angular/common/http';
 import { UserProfileConstants, UserProfile } from '@app/_models/user-profile';
 import { EventEmitter } from '@angular/core';
 import { StatusItem } from '@app/_models/status-item';
 import { ListItem } from '@app/_models/list-item';
-import { Articles } from '@app/_models/articles';
 import { formatDate } from '@angular/common';
 import { MatDialog, MatDialogConfig } from "@angular/material";
-import { MsgBoxComponent } from '@app/_components/msg-box/msg-box.component';
-import { CustomerDelivery } from '@app/_models/customer-delivery';
-import { NgModel } from '@angular/forms';
+import { ShipmentPickupDialogComponent } from '@app/_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
+import { AddShipmentComponent } from '../add-shipment/add-shipment.component';
 
 export const PICK_FORMATS = {
   parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
@@ -134,25 +131,57 @@ export class OrderHandlerComponent implements OnInit {
     );
   }
 
-  openDialog() {
+  mailPickup() {
+    this.service
+    .post(
+      'utils/createShipments',
+      {
+        'forwarder' : "CES"
+      }
+    )
+    .subscribe(
+      (res: HttpResponse<any>)=>{  
+        console.log(res);
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = false;
+        dialogConfig.autoFocus = true;
+        dialogConfig.hasBackdrop = true;
+    
+        dialogConfig.data = {
+          id: 1,
+          title: 'Gestione richiesta di pick a vettore',
+          message: 'funziona?',
+          shipmentList: res.body.shipmentList,
+          forwarder: "CES"
+        };
+
+        dialogConfig.height = '800px';
+        dialogConfig.width = '1600px';
+    
+        this.dialog.open(ShipmentPickupDialogComponent, dialogConfig);
+      }
+    );
+  }
+
+  addShipment()
+  {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
+    dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
 
     dialogConfig.data = {
       id: 1,
-      title: 'prova',
-      message: 'funziona?'
+      caption: 'Aggiunta spedizione a ordine',
+      order: this.orderHandler.details
     };
-    // dialogConfig.position = {
-    //   top: '100',
-    //   left: '100'
-    // };
-    dialogConfig.height = '100px';
-    dialogConfig.width = '200px';
+    
+    dialogConfig.height = '600px';
+    dialogConfig.width = '1000px';
 
-    this.dialog.open(MsgBoxComponent, dialogConfig);
+    this.dialog.open(AddShipmentComponent, dialogConfig);
   }
 
   onOrderStatusChange(event:MatSelectChange)
@@ -192,7 +221,6 @@ export class OrderHandlerComponent implements OnInit {
       }
       if ((this.orderHandler.details.forwarder == "TWS") && 
           ((this.orderHandler.details.numberOfItemsToShip == 0) ||
-          (this.orderHandler.details.forwarderCost == 0) ||
           (this.orderHandler.details.customerDeliveryProvince == null) ||
            (this.orderHandler.details.customerDeliveryProvince == "")))
       {
@@ -270,7 +298,11 @@ export class OrderHandlerComponent implements OnInit {
                 if (!this.profile.filters.filterShipment[UserProfileConstants.FILTER_SHIPMENT_COMPLETED])
                   this.getOrdersBasedOnFilters.emit();
                 break;
-            }
+              case "INV":
+                if (!this.profile.filters.filterInvoice[UserProfileConstants.FILTER_INVOICE_COMPLETED])
+                  this.getOrdersBasedOnFilters.emit();
+                break;
+              }
          }
       );
 
@@ -346,7 +378,7 @@ export class OrderHandlerComponent implements OnInit {
              this.orderHandler.note = res.body.orderNotes;
       });
   }
-
+ 
   onDeliveryAttributeChange(event:any)
   {
     var sourceId: string;
@@ -363,7 +395,7 @@ export class OrderHandlerComponent implements OnInit {
       province = event.srcElement.value;
     }
     console.log(sourceId + " changed ");
-    if (sourceId == "province")
+    if ((sourceId == "province") && this.orderHandler.details.forwarder != "CLI")
     {
       this.service
       .post(
@@ -371,18 +403,18 @@ export class OrderHandlerComponent implements OnInit {
         {
           "forwarder" : this.orderHandler.details.forwarder, 
           "province" : province,
-          "len" : this.orderHandler.details.palletLength,
-          "width" : this.orderHandler.details.palletWidth,
-          "height" : this.orderHandler.details.palletHeigth,
-          "weight" : this.orderHandler.details.palletWeigth
+          "len" : this.orderHandler.shipments[0].palletLength,
+          "width" : this.orderHandler.shipments[0].palletWidth,
+          "height" : this.orderHandler.shipments[0].palletHeigth,
+          "weight" : this.orderHandler.shipments[0].palletWeigth
         }
       )
       .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
-          this.orderHandler.details.forwarderCost = res.body.shipmentCost;
+          this.orderHandler.shipments[0].forwarderCost = res.body.shipmentCost;
         }
-      )
+      );
     }
 
     this.service
@@ -466,6 +498,78 @@ export class OrderHandlerComponent implements OnInit {
     this.updateOrder();
   }
 
+  onShipmentAttributeChange(event:any)
+  {
+    var sourceId: string;
+    var value: any;
+
+    console.log(event);
+    if (event.source != null)
+    {
+      sourceId = event.source._id;
+      value = event.source.value;
+    }
+    else if (event.srcElement != null)
+    {
+      sourceId = event.srcElement.id;
+      value = event.srcElement.value;
+    }
+    console.log(sourceId + " changed ");
+
+    switch(sourceId)
+    {
+      case "palletLength":
+        this.orderHandler.shipments[0].palletLength = parseInt(value);
+        break;
+      
+      case "palletWidth":
+        this.orderHandler.shipments[0].palletWidth = parseInt(value);
+        break;
+      
+      case "palletHeigth":
+        this.orderHandler.shipments[0].palletHeigth = parseInt(value);
+        break;
+      
+      case "palletWeigth":
+        this.orderHandler.shipments[0].palletWeigth = parseInt(value);
+        break;
+
+      case "numberOfItemsToShip":
+        this.orderHandler.shipments[0].numberOfItemsToShip = parseInt(value);
+        break;
+    }
+    this.apiService
+    .update(
+      "orders/shipment",
+      {
+        "shipment" : this.orderHandler.shipments[0]
+      }
+    )
+    .subscribe(
+      (res: HttpResponse<any>) => {
+        console.log("shipment updated: " + res);
+        this.service
+        .post(
+          "orders/shipmentCost",
+          {
+            "forwarder" : this.orderHandler.details.forwarder, 
+            "province" : this.orderHandler.details.customerDeliveryProvince,
+            "len" : this.orderHandler.shipments[0].palletLength,
+            "width" : this.orderHandler.shipments[0].palletWidth,
+            "height" : this.orderHandler.shipments[0].palletHeigth,
+            "weight" : this.orderHandler.shipments[0].palletWeigth
+          }
+        )
+        .subscribe(
+          (res: HttpResponse<any>)=>{  
+            console.log(res);
+            this.orderHandler.shipments[0].forwarderCost = res.body.shipmentCost;
+          }
+        );
+        }
+    );
+  }
+
   updateOrder()
   {
     this.service
@@ -505,7 +609,7 @@ export class OrderHandlerComponent implements OnInit {
       var i: number;
       for( i = 0; i < stringArray.length; i++)
       {
-        if (stringArray[i].localeCompare(value))
+        if (stringArray[i].localeCompare(value) == 0)
         {
           isIn = true;
           break;

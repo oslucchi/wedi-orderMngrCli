@@ -36,7 +36,7 @@
                             <mat-checkbox labelPosition="after" id='SHI' [(ngModel)]="profile.filters.filterShipment[0]"
                                           [checked]="profile.filters.filterShipment[0]"
                                           (change)="changeProfileFilters($event)">
-                                          Spediti
+                                Spediti
                             </mat-checkbox>                            
                         </td>
                     </tr>
@@ -55,7 +55,12 @@
                                 Pronti
                             </mat-checkbox>                            
                         </td>
-                       <td>
+                        <td>
+                            <mat-checkbox labelPosition="after" id='INV' [(ngModel)]="profile.filters.filterInvoice[0]"
+                                          [checked]="profile.filters.filterInvoice[0]"
+                                          (change)="changeProfileFilters($event)">
+                                Fatturati
+                            </mat-checkbox>                            
                         </td>
                     </tr>
                     <tr>

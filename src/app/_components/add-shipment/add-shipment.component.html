@@ -1,0 +1,111 @@
+<p class="mat-h3" style='text-align: center;'>
+    {{ caption }} {{ order.orderRef }}
+</p>
+
+<mat-table [dataSource]="dataSourceShipments" id="shipments">
+    <ng-container matColumnDef="palletLength">
+        <mat-header-cell *matHeaderCellDef>Lun</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.palletLength}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="palletWidth">
+        <mat-header-cell *matHeaderCellDef>Lar</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.palletWidth}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="palletHeigth">
+        <mat-header-cell *matHeaderCellDef>ALt</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.palletHeigth}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="palletWeigth">
+        <mat-header-cell *matHeaderCellDef>Kg</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.palletWeigth}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="forwarderCost">
+        <mat-header-cell *matHeaderCellDef>Vet</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.forwarderCost}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="clientCost">
+        <mat-header-cell *matHeaderCellDef>Cli</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.clientCost}}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="note">
+        <mat-header-cell *matHeaderCellDef>Note</mat-header-cell>
+        <mat-cell class="mat-body" *matCellDef="let shipment">{{shipment.note}}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="getShipmentDisplayedColumns()"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: getShipmentDisplayedColumns()" (click)="editShipment(row)"></mat-row>
+</mat-table>
+<br>
+<br>
+<table>
+    <tr style='text-align: left;'>
+        <td style="width:100px">
+            <mat-label class="mat-body">Dimensioni</mat-label>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:55px !important; text-align: right;">
+                <mat-label>Lun</mat-label>
+                <input matInput id="length" type="number"
+                        [(ngModel)]="shipment.palletLength"
+                        (change)="calculateShipmentCosts()"
+                        maxlength="3">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:55px !important; text-align: right;">
+                <mat-label>Lar</mat-label>
+                <input matInput id="width" type="number"
+                        [(ngModel)]="shipment.palletWidth" 
+                        (change)="calculateShipmentCosts()"
+                        maxlength="3">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:55px !important; text-align: right;">
+                <mat-label>Alt</mat-label>
+                <input matInput id="heigth" type="number"
+                    [(ngModel)]="shipment.palletHeigth" 
+                    (change)="calculateShipmentCosts()"
+                    maxlength="3">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:55px !important; text-align: right;">
+                <mat-label>Kg</mat-label>
+                <input matInput id="weigth" type="number"
+                    [(ngModel)]="shipment.palletWeigth" 
+                    (change)="calculateShipmentCosts()"
+                    maxlength="3">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:60px !important; text-align: right;">
+                <mat-label>Vet</mat-label>
+                <input matInput id="forwarderCost"
+                    [(ngModel)]="shipment.forwarderCost" 
+                    maxlength="5" 
+                    disabled="true">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:60px !important; text-align: right;">
+                <mat-label>Cli</mat-label>
+                <input matInput id="clientCost" type="number"
+                    [(ngModel)]="shipment.clientCost" 
+                    maxlength="5">
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field appearance="fill" style="width:300px !important; text-align: right;">
+                <mat-label>Note</mat-label>
+                <input matInput id="note"
+                    [(ngModel)]="shipment.note" 
+                    maxlength="80">
+            </mat-form-field>
+        </td>
+        <td>
+            <button mat-button id="saveShipment" (click)="saveShipment()">Salva</button>
+            <br>
+            <button mat-button id="newShipment" (click)="newShipment()">Cancella</button>
+        </td>
+    </tr>
+</table>

@@ -16,7 +16,7 @@ export class OrderHandler {
 
   public details: Orders = new Orders;
   public note: OrderNotes = new OrderNotes;
-  public shipments: OrderShipments = new OrderShipments;
+  public shipments: OrderShipments[];
   public customerDelivery: CustomerDelivery = new CustomerDelivery;
   public statusPre: string;
 }

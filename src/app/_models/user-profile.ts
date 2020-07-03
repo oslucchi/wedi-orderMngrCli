@@ -10,12 +10,14 @@ export class UserProfileConstants {
     static readonly FILTER_WHAREHOUSE_READY: number = 1;
     static readonly FILTER_WHAREHOUSE_ALL: number = 2;
     static readonly FILTER_SHIPMENT_COMPLETED: number = 0;
+    static readonly FILTER_INVOICE_COMPLETED: number = 0;
 }
 
 export class Filters {
     public filterOrders: boolean[] = [ false, false, false, false, false ];
     public filterWarehouse: boolean[]  = [ false, false, false ];
-    public filterShipment: boolean[]  = [ false ];
+    public filterShipment: boolean[]  = [ false];
+    public filterInvoice: boolean[]  = [ false];
 }
 
 export class UserProfile {
@@ -31,6 +33,7 @@ export class UserProfile {
         this.filters.filterOrders  = [ false, false, false, false, false ];
         this.filters.filterWarehouse = [ false, false, false ];
         this.filters.filterShipment = [ false ];
+        this.filters.filterInvoice = [ false ];
     }
     
     getProfile()
@@ -45,6 +48,7 @@ export class UserProfile {
             this.filters.filterOrders = [true, true, true, true, true];
             this.filters.filterWarehouse = [false, false,  false];
             this.filters.filterShipment = [false];
+            this.filters.filterInvoice = [false];
         }
         else
         {
@@ -52,6 +56,7 @@ export class UserProfile {
             this.filters.filterOrders = filter.filterOrders;
             this.filters.filterWarehouse = filter.filterWarehouse;
             this.filters.filterShipment = filter.filterShipment;
+            this.filters.filterInvoice = ("filterInvoice" in filter ? filter.filterInvoice : [ false ]);
         }
     }
 
@@ -109,6 +114,11 @@ export class UserProfile {
         if (this.filters.filterShipment[UserProfileConstants.FILTER_SHIPMENT_COMPLETED])
         {
             status += sep + "'SHI'";
+            sep = ",";
+        }
+        if (this.filters.filterInvoice[UserProfileConstants.FILTER_INVOICE_COMPLETED])
+        {
+            status += sep + "'INV'";
             sep = ",";
         }
         return(status);

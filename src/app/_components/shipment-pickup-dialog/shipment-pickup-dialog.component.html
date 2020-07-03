@@ -1,0 +1,75 @@
+<h1 class="mat-h1" style='text-align: center;'>
+        Ordini da segnalare a trasportatore {{ forwarder }}
+</h1>
+
+<mat-form-field>
+    <mat-label>Data ritiro: </mat-label>
+    <input matInput [matDatepicker]="pickupDate" 
+                    placeholder="Scegli data" 
+                    [(ngModel)]="pickupDateVar">
+    <mat-datepicker-toggle matSuffix [for]="pickupDate"></mat-datepicker-toggle>
+    <mat-datepicker #pickupDate></mat-datepicker>
+</mat-form-field>
+
+<mat-dialog-content>
+    <mat-table [dataSource]="dataSource" id="shipments" matSort class="mat-elevation-z8">
+        <ng-container matColumnDef="selected">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox [(ngModel)]="checkAll" 
+                            [checked]="checkAll"
+                            (change)="changeCheckStatus($event)">
+            </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let shipment">
+                <mat-checkbox [(ngModel)]="shipment.selected"></mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="customer">
+            <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.customer}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="address">
+            <mat-header-cell *matHeaderCellDef>Indirizzo</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.address}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="province">
+            <mat-header-cell *matHeaderCellDef>PV</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.province}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="insurance">
+            <mat-header-cell *matHeaderCellDef>Ass</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.insurance}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="length">
+            <mat-header-cell *matHeaderCellDef>Lun</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.length}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="width">
+            <mat-header-cell *matHeaderCellDef>Lar</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.width}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="heigth">
+            <mat-header-cell *matHeaderCellDef>Alt</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.heigth}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="weigth">
+            <mat-header-cell *matHeaderCellDef>Kg</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.weigth}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ddt">
+            <mat-header-cell *matHeaderCellDef>DDT</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.ddt}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="note">
+            <mat-header-cell *matHeaderCellDef>Note</mat-header-cell>
+            <mat-cell *matCellDef="let shipment">{{shipment.note}}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="getShipmentsDisplayedColumns()"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: getShipmentsDisplayedColumns()"></mat-row>
+    </mat-table>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button"(click)="sendEmail()">Spedisci mail</button>
+    <button class="mat-raised-button mat-primary"(click)="closeDialog()">Esci</button>
+</mat-dialog-actions>

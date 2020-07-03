@@ -17,6 +17,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatDatepickerModule, MatNativeDateModule, MatSortModule, MatDialogModule } from '@angular/material';
 import { OrderHandlerComponent } from './_components/order-handler/order-handler.component';
 import { MsgBoxComponent } from './_components/msg-box/msg-box.component';
+import { ShipmentPickupDialogComponent } from './_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
+import { AddShipmentComponent } from './_components/add-shipment/add-shipment.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { MsgBoxComponent } from './_components/msg-box/msg-box.component';
     LoginComponent,
     OrdersComponent,
     OrderHandlerComponent,
-    MsgBoxComponent
+    MsgBoxComponent,
+    ShipmentPickupDialogComponent,
+    AddShipmentComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +48,10 @@ import { MsgBoxComponent } from './_components/msg-box/msg-box.component';
     MatDialogModule
   ],
   providers: [CookieService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ShipmentPickupDialogComponent, 
+    AddShipmentComponent
+  ]
 })
 export class AppModule { }
