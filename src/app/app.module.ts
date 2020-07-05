@@ -19,6 +19,7 @@ import { OrderHandlerComponent } from './_components/order-handler/order-handler
 import { MsgBoxComponent } from './_components/msg-box/msg-box.component';
 import { ShipmentPickupDialogComponent } from './_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
 import { AddShipmentComponent } from './_components/add-shipment/add-shipment.component';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -41,13 +42,14 @@ import { AddShipmentComponent } from './_components/add-shipment/add-shipment.co
     MatInputModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule,
+    // MatNativeDateModule,
+    MatMomentDateModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatSortModule,
     MatDialogModule
   ],
-  providers: [CookieService],
+  providers: [CookieService, MatMomentDateModule],
   bootstrap: [AppComponent],
   entryComponents: [
     ShipmentPickupDialogComponent, 

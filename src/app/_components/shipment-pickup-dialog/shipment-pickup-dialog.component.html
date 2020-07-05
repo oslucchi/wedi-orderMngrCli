@@ -1,15 +1,32 @@
 <h1 class="mat-h1" style='text-align: center;'>
         Ordini da segnalare a trasportatore {{ forwarder }}
 </h1>
-
-<mat-form-field>
-    <mat-label>Data ritiro: </mat-label>
-    <input matInput [matDatepicker]="pickupDate" 
-                    placeholder="Scegli data" 
-                    [(ngModel)]="pickupDateVar">
-    <mat-datepicker-toggle matSuffix [for]="pickupDate"></mat-datepicker-toggle>
-    <mat-datepicker #pickupDate></mat-datepicker>
-</mat-form-field>
+<table>
+    <tr>
+        <td>
+            <mat-form-field>
+                <mat-label>Vettore</mat-label>
+                <mat-select id="forwarder"
+                            [(ngModel)]="forwarderVar">
+                    <div *ngFor="let item of forwarders;">
+                        <mat-option [value]="item.id" >{{ item.des }}</mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field>
+                <mat-label>Data ritiro: </mat-label>
+                <input matInput 
+                    [matDatepicker]="pickupDate" 
+                    [(ngModel)]="pickupDateVar"
+                    placeholder="Scegli data">
+                <mat-datepicker-toggle matSuffix [for]="pickupDate"></mat-datepicker-toggle>
+                <mat-datepicker #pickupDate></mat-datepicker>
+            </mat-form-field>
+        </td>
+    </tr>
+</table>
 
 <mat-dialog-content>
     <mat-table [dataSource]="dataSource" id="shipments" matSort class="mat-elevation-z8">

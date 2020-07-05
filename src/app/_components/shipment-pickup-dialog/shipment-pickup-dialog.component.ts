@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA, 
-         NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
+         DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
 import { Shipment } from '@app/_models/shipment';
 import { ApiService } from '@app/_services/api.service';
 import { HttpResponse } from '@angular/common/http';
@@ -9,40 +9,30 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS,
          MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 import * as _moment from 'moment';
-// tslint:disable-next-line:no-duplicate-imports
-// import { default as _rollupMoment} from 'moment';
-
-const moment =  _moment; // _rollupMoment
-
-export const PICK_FORMATS = {
-  parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
+export const MY_FORMATS = {
+  parse: {
+      dateInput: 'DD/MM/YYYY',
+  },
   display: {
-      dateInput: 'input',
-      monthYearLabel: {year: 'numeric', month: 'numeric'},
-      dateA11yLabel: {year: 'numeric', month: 'numeric', day: 'numeric'},
-      monthYearA11yLabel: {year: 'numeric', month: 'numeric'}
-  }
+      dateInput: 'DD/MM/YYYY',
+      monthYearLabel: 'MM YYYY',
+      dateA11yLabel: 'DD/MM/YYYY',
+      monthYearA11yLabel: 'MM YYYY',
+  },
 };
-
-export class PickDateAdapter extends NativeDateAdapter {
-  format(date: Date, displayFormat: Object): string {
-      if (displayFormat === 'input') {
-          return formatDate(date,'dd-MM-yyyy',this.locale);;
-      } else {
-          return date.toDateString();
-      }
-  }
-}
 
 @Component({
   selector: 'app-shipment-pickup-dialog',
   templateUrl: './shipment-pickup-dialog.component.html',
   styleUrls: ['./shipment-pickup-dialog.component.css'],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true }}
-  ]
+  providers: [{
+    provide: MAT_DATE_LOCALE,
+    useValue: 'it'
+  },
+  {
+    provide: MAT_DATE_FORMATS,
+    useValue: MY_FORMATS
+  }]
 })
 export class ShipmentPickupDialogComponent implements OnInit {
 
@@ -58,7 +48,15 @@ export class ShipmentPickupDialogComponent implements OnInit {
     { def: 'heigth', hide: false },  
     { def: 'weigth', hide: false },
     { def: 'note', hide: false }
-   ];
+  ];
+
+  public forwarders: any[] = [
+    { id: "CES", des: "CESPED", selected: false },
+    { id: "TWS", des: "TWS - Collettame", selected: false }
+  ];
+
+  public forwarderVar: string;
+
   public checkAll: boolean;
   public dataSource: MatTableDataSource<Shipment>;
   public title: string;

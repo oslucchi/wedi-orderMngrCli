@@ -224,12 +224,30 @@
                     </td>
                     <td colspan="4">
                         <mat-form-field style='width: 100px'>
+                            <input matInput 
+                                    [matDatepicker]="requestedAssemblyDate" 
+                                    [(ngModel)]="orderHandler.details.requestedAssemblyDate"
+                                    (ngModelChange)="onAttributeChange({source: { _id: 'requestedAssemblyDate', 'value' : orderHandler.details.requestedAssemblyDate.format('YYYY-MM-DD')}})"
+                                    placeholder="Scegli data">
+                            <mat-datepicker-toggle matSuffix [for]="requestedAssemblyDate"></mat-datepicker-toggle>
+                            <mat-datepicker #requestedAssemblyDate></mat-datepicker>
+<!--
+                            <input #startDate matInput 
+                                        [matDatepicker]="requestedAssemblyDate" 
+                                        [(ngModel)]="orderHandler.details.requestedAssemblyDate"
+                                        (ngModelChange)="onAttributeChange($event)"
+                                        (dateInput)="evalDate($event.value.format('YYYY-MM-D'))"
+                                        placeholder="Scegli data">
+                            <mat-datepicker-toggle matSuffix [for]="requestedAssemblyDate"></mat-datepicker-toggle>
+                            <mat-datepicker #requestedAssemblyDate></mat-datepicker>
                             <input matInput [matDatepicker]="requestedAssemblyDate" 
                                             placeholder="Scegli data" 
                                             [(ngModel)]="orderHandler.details.requestedAssemblyDate"
-                                            (ngModelChange)="onAttributeChange($event)">
+                                            (ngModelChange)="onAttributeChange({source: { _id: 'requestedAssemblyDate', 'value' : $event}})">
                             <mat-datepicker-toggle matSuffix [for]="requestedAssemblyDate"></mat-datepicker-toggle>
-                            <mat-datepicker #preparationDate></mat-datepicker>
+
+                            <mat-datepicker #requestedAssemblyDate></mat-datepicker>
+--> 
                         </mat-form-field>
                     </td>
                 </tr>

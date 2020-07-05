@@ -3,7 +3,7 @@ import { Orders } from "@app/_models/orders";
 import { ApiService } from '@app/_services/api.service';
 import { OrderHandler } from '@app/_models/order-handler';
 import { OrderDetails } from '@app/_models/order-details';
-import { MatSelectChange, NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MatTableDataSource } from '@angular/material';
+import { MatSelectChange, NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MatTableDataSource, MAT_DATE_LOCALE } from '@angular/material';
 import { HttpResponse } from '@angular/common/http';
 import { UserProfileConstants, UserProfile } from '@app/_models/user-profile';
 import { EventEmitter } from '@angular/core';
@@ -14,36 +14,32 @@ import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ShipmentPickupDialogComponent } from '@app/_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
 import { AddShipmentComponent } from '../add-shipment/add-shipment.component';
 import { OrderShipments } from '@app/_models/order-shipments';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
-export const PICK_FORMATS = {
-  parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
+export const MY_FORMATS = {
+  parse: {
+      dateInput: 'DD/MM/YYYY',
+  },
   display: {
-      dateInput: 'input',
-      monthYearLabel: {year: 'numeric', month: 'numeric'},
-      dateA11yLabel: {year: 'numeric', month: 'numeric', day: 'numeric'},
-      monthYearA11yLabel: {year: 'numeric', month: 'numeric'}
-  }
+      dateInput: 'DD/MM/YYYY',
+      monthYearLabel: 'MM YYYY',
+      dateA11yLabel: 'DD/MM/YYYY',
+      monthYearA11yLabel: 'MM YYYY',
+  },
 };
-
-export class PickDateAdapter extends NativeDateAdapter {
-  format(date: Date, displayFormat: Object): string {
-      if (displayFormat === 'input') {
-          return formatDate(date,'dd-MM-yyyy',this.locale);;
-      } else {
-          return date.toDateString();
-      }
-  }
-}
-
 
 @Component({
   selector: 'app-order-handler',
   templateUrl: './order-handler.component.html',
   styleUrls: ['./order-handler.component.css'],
-  providers: [
-    {provide: DateAdapter, useClass: PickDateAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
-  ]
+  providers: [{
+        provide: MAT_DATE_LOCALE,
+        useValue: 'it'
+      },
+      {
+        provide: MAT_DATE_FORMATS,
+        useValue: MY_FORMATS
+      }]
 })
 
 export class OrderHandlerComponent implements OnInit {
@@ -462,7 +458,12 @@ export class OrderHandlerComponent implements OnInit {
     var sourceId: string;
     var value: any;
 
-    console.log(event);
+    console.log("onAttributeChange() called");
+    if (event == null)
+    {
+      console.log("Event is null, doing nothing");
+      return;
+    }
     if (event.source != null)
     {
       sourceId = event.source._id;
@@ -473,7 +474,7 @@ export class OrderHandlerComponent implements OnInit {
       sourceId = event.srcElement.id;
       value = event.srcElement.value;
     }
-    console.log(sourceId + " changed ");
+    console.log(sourceId + " changed to: '" + value + "'");
 
     switch(sourceId)
     {
@@ -499,6 +500,10 @@ export class OrderHandlerComponent implements OnInit {
 
       case "forwarder":
         this.orderHandler.details.forwarder = value;
+        break;
+
+      case "requestedAssemblyDate":
+        this.orderHandler.details.requestedAssemblyDate = new Date(value);
         break;
 
       case "assemblyTime":
@@ -595,7 +600,7 @@ export class OrderHandlerComponent implements OnInit {
     .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
-          res.body.order.requestedAssmblyDate = new Date(res.body.order.requestedAssmblyDate);
+          res.body.order.requestedAssemblyDate = new Date(res.body.order.requestedAssemblyDate);
           res.body.order.effectiveAssemblyDate = new Date(res.body.order.effectiveAssemblyDate);
           res.body.order.shipmentDate = new Date(res.body.order.shipmentDate);
           this.orderList.forEach(item  => 
@@ -631,4 +636,21 @@ export class OrderHandlerComponent implements OnInit {
     }
     return isIn;
   }
+
+  evalDate(v: string, x)
+  {
+    this.orderHandler.details.requestedAssemblyDate = new Date(v);
+  }
+
+  parseDate(date): Date {
+    let d: Date;
+    try {
+      d = new Date(date);
+    } catch {
+      d = new Date();
+    } finally {
+      return d;
+    }
+  }
 }
+
