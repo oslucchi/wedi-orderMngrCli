@@ -467,7 +467,7 @@ export class OrderHandlerComponent implements OnInit {
     if (event.source != null)
     {
       sourceId = event.source._id;
-      value = event.source.value;
+      value = (sourceId.localeCompare("requestedAssemblyDate") == 0 ? event.source.value._d : event.source.value);
     }
     else if (event.srcElement != null)
     {

@@ -227,11 +227,12 @@
                             <input matInput 
                                     [matDatepicker]="requestedAssemblyDate" 
                                     [(ngModel)]="orderHandler.details.requestedAssemblyDate"
-                                    (ngModelChange)="onAttributeChange({source: { _id: 'requestedAssemblyDate', 'value' : orderHandler.details.requestedAssemblyDate.format('YYYY-MM-DD')}})"
+                                    (ngModelChange)="onAttributeChange({source: { _id: 'requestedAssemblyDate', 'value' : $event}})"
                                     placeholder="Scegli data">
                             <mat-datepicker-toggle matSuffix [for]="requestedAssemblyDate"></mat-datepicker-toggle>
                             <mat-datepicker #requestedAssemblyDate></mat-datepicker>
 <!--
+                                    (ngModelChange)="onAttributeChange({source: { _id: 'requestedAssemblyDate', 'value' : orderHandler.details.requestedAssemblyDate.format('YYYY-MM-DD')}})"
                             <input #startDate matInput 
                                         [matDatepicker]="requestedAssemblyDate" 
                                         [(ngModel)]="orderHandler.details.requestedAssemblyDate"
