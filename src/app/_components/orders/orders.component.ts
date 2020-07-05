@@ -54,12 +54,8 @@ export class OrdersComponent implements OnInit {
     { def: 'customerRefERP',  hide: false }, 
     { def: 'customerDescription', hide: false }, 
     { def: 'customerDeliveryProvince', hide: true }, 
-    { def: 'preparationDate', hide: false }, 
-    { def: 'sourceIssue', hide: false },  
-    { def: 'palletLength', hide: true },
-    { def: 'palletWidth', hide: true },
-    { def: 'palletHeigth', hide: true },
-    { def: 'palletWeigth', hide: true },
+    { def: 'requestedAssemblyDate', hide: false }, 
+    { def: 'sourceIssue', hide: false },
     { def: 'empty', hide: true },
     { def: 'compositionBoards', hide: false },
     { def: 'compositionTrays', hide: false },
@@ -117,7 +113,8 @@ export class OrdersComponent implements OnInit {
     i = 0;
     this.orderList.forEach(item => {
       item.shipmentDate = new Date(item.shipmentDate);
-      item.preparationDate = new Date(item.preparationDate);
+      item.requestedAssemblyDate = new Date(item.requestedAssemblyDate);
+      item.effectiveAssemblyDate = new Date(item.effectiveAssemblyDate);
       if ((item.compositionBoards < 0) || i == 0)
       {
         this.service
@@ -132,6 +129,7 @@ export class OrdersComponent implements OnInit {
                   this.orderHandler = new OrderHandler;
                   this.orderHandler.details = item;
                   this.orderHandler.note = res.body.orderNotes;
+                  this.orderHandler.shipments = res.body.orderShipments;
                   this.orderHandler.customerDelivery = res.body.customerDelivery;
                   this.orderHandler.statusPre = this.orderHandler.details.status;
                   this.statusTransitionEval(item.status);
@@ -186,7 +184,8 @@ export class OrdersComponent implements OnInit {
                     .update(
                       "orders/update/" + item.idOrder,
                       {
-                        "order" : item
+                        "order" : item,
+                        "shipments": res.body.orderShipments
                       }
                     )
                     .subscribe(
@@ -359,8 +358,9 @@ export class OrdersComponent implements OnInit {
           {
             this.orderHandler.details = order;
             this.orderHandler.details.shipmentDate = new Date(order.shipmentDate);
-            this.orderHandler.details.preparationDate = new Date(order.preparationDate);
-          }
+            this.orderHandler.details.requestedAssemblyDate = new Date(order.requestedAssemblyDate);
+            this.orderHandler.details.effectiveAssemblyDate = new Date(order.effectiveAssemblyDate);
+                }
           this.orderDetails = res.body.orderDetails;
           this.dataSourceDetails = new MatTableDataSource<OrderDetails>(this.orderDetails);
           this.orderHandler.note = res.body.orderNotes;

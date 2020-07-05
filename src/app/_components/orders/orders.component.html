@@ -153,29 +153,13 @@
                             <mat-header-cell *matHeaderCellDef>PV</mat-header-cell>
                             <mat-cell *matCellDef="let order">{{order.customerDeliveryProvince}}</mat-cell>
                         </ng-container>
-                        <ng-container matColumnDef="preparationDate">
+                        <ng-container matColumnDef="requestedAssemblyDate">
                             <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
-                            <mat-cell *matCellDef="let order">{{order.preparationDate|date:'dd/MM/yy'}}</mat-cell>
+                            <mat-cell *matCellDef="let order">{{order.requestedAssemblyDate|date:'dd/MM/yy'}}</mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="sourceIssue">
                             <mat-header-cell *matHeaderCellDef>E</mat-header-cell>
                             <mat-cell *matCellDef="let order">{{order.sourceIssue}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="palletLength">
-                            <mat-header-cell *matHeaderCellDef>L</mat-header-cell>
-                            <mat-cell *matCellDef="let order">{{order.palletLength}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="palletWidth">
-                            <mat-header-cell *matHeaderCellDef>W</mat-header-cell>
-                            <mat-cell *matCellDef="let order">{{order.palletWidth }}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="palletHeigth">
-                            <mat-header-cell *matHeaderCellDef>H</mat-header-cell>
-                            <mat-cell *matCellDef="let order">{{order.palletHeigth}}</mat-cell>
-                        </ng-container>
-                        <ng-container matColumnDef="palletWeigth">
-                            <mat-header-cell *matHeaderCellDef>Kg</mat-header-cell>
-                            <mat-cell *matCellDef="let order">{{order.palletWeigth}}</mat-cell>
                         </ng-container>
                         <ng-container matColumnDef="empty">
                             <mat-header-cell *matHeaderCellDef>{{ empty }}</mat-header-cell>

@@ -1,15 +1,11 @@
 export class Orders {
 	idOrder: number;
+	status: string;
 	idCustomer: number;
 	idCustomerDelivery: number;
-	status: string;
-	preparationDate:Date;
+	requestedAssemblyDate:Date;
+	effectiveAssemblyDate:Date;
 	shipmentDate:Date;
-    palletLength: number;
-    palletWidth: number;
-    palletHeigth: number;
-    palletWeigth: number;
-    numberOfItemsToShip: number;
     orderRef: string;
     transportDocNum: string;
     forwarder: string;
@@ -19,7 +15,6 @@ export class Orders {
     assemblyTime: number;
     palletCost: number;
     insuranceCost: number;
-    selected: boolean;
     customerRefERP: string;
     customerDescription: string;
     customerDeliveryProvince: string;
@@ -29,4 +24,5 @@ export class Orders {
     compositionAccessories: number;
     sourceIssue: string;
     orderValue: number;
+    selected: boolean;
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Output } from '@angular/core';
 import { Shipment } from '@app/_models/shipment';
 import { ApiService } from '@app/_services/api.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from '@angular/material';
 import { OrderShipments } from '@app/_models/order-shipments';
 import { Orders } from '@app/_models/orders';
 import { HttpResponse } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-add-shipment',
@@ -18,8 +19,10 @@ export class AddShipmentComponent implements OnInit {
   public order: Orders;
   public caption: string;
   public shipments: OrderShipments[];
+  public shipCosts: number[] = [0, 0];
 
-  private service: ApiService;  
+  private apiService: ApiService;  
+  private dialogRef: MatDialogRef<AddShipmentComponent>;
 
   private shipmentsDisplayedColumns: any[] = [
     { def: 'palletLength', hide: false }, 
@@ -31,30 +34,25 @@ export class AddShipmentComponent implements OnInit {
     { def: 'note', hide: false }
   ];
 
-  constructor(private dialogRef: MatDialogRef<AddShipmentComponent>,
-              private apiService: ApiService,
+  public onClose = new EventEmitter();
+
+
+  constructor(private dialog: MatDialogRef<AddShipmentComponent>,
+              private service: ApiService,
               @Inject(MAT_DIALOG_DATA) data) 
   {
-    this.apiService = apiService;
+    this.dialogRef = dialog;
+    this.apiService = service;
     this.caption = data.caption;
     this.order = data.order;
+    this.shipments = data.shipments;
+    this.dataSourceShipments = new MatTableDataSource<OrderShipments>(this.shipments);
+
+    this.dialogRef.backdropClick().subscribe(() => { this.closeForm(); });
   }
 
   ngOnInit() 
   {
-    this.shipment.idOrderShipment = 0;
-
-    this.apiService
-      .get(
-        "orders/shipments/" + this.order.idOrder
-      )
-      .subscribe(
-        (res: HttpResponse<any>)=>{  
-          console.log(res);
-          this.shipments = res.body.orderShipments;
-          this.dataSourceShipments = new MatTableDataSource<OrderShipments>(this.shipments);
-        }
-      );
   }
 
   getShipmentDisplayedColumns():string[]
@@ -155,4 +153,19 @@ export class AddShipmentComponent implements OnInit {
     );
   }
 
+  shipmentCostCalculate(shipments: OrderShipments[])
+  {
+    shipments.forEach(element => {
+      this.shipCosts[0] += element.forwarderCost  
+      this.shipCosts[1] += element.clientCost  
+    });
+  }
+
+  closeForm()
+  {
+    this.shipmentCostCalculate(this.shipments);
+    
+    this.onClose.emit();
+    this.dialogRef.close();
+  }
 }

@@ -13,6 +13,7 @@ import { formatDate } from '@angular/common';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ShipmentPickupDialogComponent } from '@app/_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
 import { AddShipmentComponent } from '../add-shipment/add-shipment.component';
+import { OrderShipments } from '@app/_models/order-shipments';
 
 export const PICK_FORMATS = {
   parse: {dateInput: {day: 'numeric', month: 'numeric', year: 'numeric'}},
@@ -79,22 +80,21 @@ export class OrderHandlerComponent implements OnInit {
     var copies: number;
     var notes: string;
     var shipTo: string;
+    var numberOfItemsToShip: number;
+
     notes = this.orderHandler.customerDelivery.notes;
     shipTo = this.orderHandler.details.customerDescription + 
              ((notes != null) && (notes != "") ? "\n" + notes : "");
-
-    if (this.orderHandler.details.numberOfItemsToShip <= 0)
-    {
-      this.orderHandler.details.numberOfItemsToShip = 1;
-    }
 
     switch(this.orderHandler.details.forwarder)
     {
       case "CES":
         copies = 2;
+        numberOfItemsToShip = this.orderHandler.shipments.length;
         break;
       default:
         copies = 1;
+        numberOfItemsToShip = this.orderHandler.shipments[0].numberOfItemsToShip;
         break;
     }
 
@@ -106,7 +106,7 @@ export class OrderHandlerComponent implements OnInit {
                                      this.orderHandler.customerDelivery.province +
                 " - forwarder: " + this.orderHandler.details.forwarder +
                 " - orderRefERP" + this.orderHandler.details.orderRef.substring(2) +
-                " - numberOfItems" + this.orderHandler.details.numberOfItemsToShip +
+                " - numberOfItems" + numberOfItemsToShip +
                 " - copies: " + copies);
 
     this.service
@@ -120,7 +120,7 @@ export class OrderHandlerComponent implements OnInit {
                             this.orderHandler.customerDelivery.province,
         "forwarder" : this.orderHandler.details.forwarder,
         "orderRefERP" : this.orderHandler.details.orderRef.substring(2),
-        "numberOfItems" : this.orderHandler.details.numberOfItemsToShip,
+        "numberOfItems" : numberOfItemsToShip,
         "copies" : copies
         }
     )
@@ -175,15 +175,24 @@ export class OrderHandlerComponent implements OnInit {
     dialogConfig.data = {
       id: 1,
       caption: 'Aggiunta spedizione a ordine',
-      order: this.orderHandler.details
+      order: this.orderHandler.details,
+      shipments: this.orderHandler.shipments
     };
     
     dialogConfig.height = '600px';
     dialogConfig.width = '1000px';
 
-    this.dialog.open(AddShipmentComponent, dialogConfig);
+    let dialogRef = this.dialog.open(AddShipmentComponent, dialogConfig);
+    const sub = dialogRef.componentInstance.onClose.subscribe(() => {
+      console.log("onClose event emitted");
+      this.orderHandler.details.forwarderCost = dialogRef.componentInstance.shipCosts[0];
+      this.orderHandler.details.clientCost = dialogRef.componentInstance.shipCosts[1];
+      });
+    dialogRef.afterClosed().subscribe(() => {
+      // unsubscribe onAdd
+    });
   }
-
+  
   onOrderStatusChange(event:MatSelectChange)
   {
     var i: number;
@@ -209,10 +218,10 @@ export class OrderHandlerComponent implements OnInit {
       }
 
       if ((this.orderHandler.details.forwarder == "CES") && 
-          ((this.orderHandler.details.palletLength == 0) ||
-           (this.orderHandler.details.palletWidth == 0) ||
-           (this.orderHandler.details.palletHeigth == 0) ||
-           (this.orderHandler.details.palletWeigth == 0) ||
+          ((this.orderHandler.shipments[0].palletLength == 0) ||
+           (this.orderHandler.shipments[0].palletWidth == 0) ||
+           (this.orderHandler.shipments[0].palletHeigth == 0) ||
+           (this.orderHandler.shipments[0].palletWeigth == 0) ||
            (this.orderHandler.details.forwarderCost == 0) ||
            (this.orderHandler.details.customerDeliveryProvince == null) ||
            (this.orderHandler.details.customerDeliveryProvince == "")))
@@ -220,7 +229,7 @@ export class OrderHandlerComponent implements OnInit {
         rejectMsg = "I dati della spedizione devono essere popolati";
       }
       if ((this.orderHandler.details.forwarder == "TWS") && 
-          ((this.orderHandler.details.numberOfItemsToShip == 0) ||
+          ((this.orderHandler.shipments[0].numberOfItemsToShip == 0) ||
           (this.orderHandler.details.customerDeliveryProvince == null) ||
            (this.orderHandler.details.customerDeliveryProvince == "")))
       {
@@ -412,6 +421,7 @@ export class OrderHandlerComponent implements OnInit {
       .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
+          this.orderHandler.details.forwarderCost = res.body.shipmentCost;
           this.orderHandler.shipments[0].forwarderCost = res.body.shipmentCost;
         }
       );
@@ -468,23 +478,23 @@ export class OrderHandlerComponent implements OnInit {
     switch(sourceId)
     {
       case "palletLength":
-        this.orderHandler.details.palletLength = parseInt(value);
+        this.orderHandler.shipments[0].palletLength = parseInt(value);
         break;
       
       case "palletWidth":
-        this.orderHandler.details.palletWidth = parseInt(value);
+        this.orderHandler.shipments[0].palletWidth = parseInt(value);
         break;
       
       case "palletHeigth":
-        this.orderHandler.details.palletHeigth = parseInt(value);
+        this.orderHandler.shipments[0].palletHeigth = parseInt(value);
         break;
       
       case "palletWeigth":
-        this.orderHandler.details.palletWeigth = parseInt(value);
+        this.orderHandler.shipments[0].palletWeigth = parseInt(value);
         break;
 
       case "numberOfItemsToShip":
-        this.orderHandler.details.numberOfItemsToShip = parseInt(value);
+        this.orderHandler.shipments[0].numberOfItemsToShip = parseInt(value);
         break;
 
       case "forwarder":
@@ -564,6 +574,7 @@ export class OrderHandlerComponent implements OnInit {
           (res: HttpResponse<any>)=>{  
             console.log(res);
             this.orderHandler.shipments[0].forwarderCost = res.body.shipmentCost;
+            this.orderHandler.details.forwarderCost = res.body.shipmentCost;
           }
         );
         }
@@ -577,13 +588,15 @@ export class OrderHandlerComponent implements OnInit {
       'orders/update/' + this.orderHandler.details.idOrder,
       {
         "order": this.orderHandler.details,
+        "shipments": this.orderHandler.shipments,
         "buyValue" : this.orderValue | 0
       }
     )
     .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
-          res.body.order.preparationDate = new Date(res.body.order.preparationDate);
+          res.body.order.requestedAssmblyDate = new Date(res.body.order.requestedAssmblyDate);
+          res.body.order.effectiveAssemblyDate = new Date(res.body.order.effectiveAssemblyDate);
           res.body.order.shipmentDate = new Date(res.body.order.shipmentDate);
           this.orderList.forEach(item  => 
             {

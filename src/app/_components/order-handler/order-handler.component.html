@@ -94,8 +94,11 @@
                                 maxlength="3">
                         </mat-form-field>
                     </td>
-                    <td>
-                        <button mat-button id="addShipment" (click)="addShipment()">+</button>
+                    <td style="vertical-align: top">
+                        <button mat-button id="addShipment" (click)="addShipment()" style='height: 40px;'>
+                            <span *ngIf="orderHandler.shipments.length>1" style="color: red; font-weight: bold;font-size: 16px">+</span>
+                            <span *ngIf="orderHandler.shipments.length<=1" style="color: black;font-size: 16px;">+</span>
+                        </button>
                     </td>
                 </tr>
                 <tr style='text-align: left;' 
@@ -137,17 +140,19 @@
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Cli</mat-label>
                             <input matInput id="clientCost"
-                                    [(ngModel)]="orderHandler.shipments[0].clientCost" 
+                                    [(ngModel)]="orderHandler.details.clientCost" 
                                     (change)="onAttributeChange($event)"
-                                    maxlength="7">
+                                    maxlength="7"
+                                    [disabled]="(attributeInSet(['CES'], orderHandler.details.forwarder) ? true : false)"/>
                         </mat-form-field>
                     </td>
                     <td style='vertical-align: center;'>
                         <mat-form-field appearance="fill" style="width:45px !important; text-align: right;">
                             <mat-label>Vet</mat-label>
                             <input matInput id="forwarderCost"
-                                    [(ngModel)]="orderHandler.shipments[0].forwarderCost" 
-                                    maxlength="7">
+                                    [(ngModel)]="orderHandler.details.forwarderCost" 
+                                    maxlength="7"
+                                    disabled="true;">
                         </mat-form-field>
                     </td>
                     <td>
@@ -219,11 +224,11 @@
                     </td>
                     <td colspan="4">
                         <mat-form-field style='width: 100px'>
-                            <input matInput [matDatepicker]="preparationDate" 
+                            <input matInput [matDatepicker]="requestedAssemblyDate" 
                                             placeholder="Scegli data" 
-                                            [(ngModel)]="orderHandler.details.preparationDate"
+                                            [(ngModel)]="orderHandler.details.requestedAssemblyDate"
                                             (ngModelChange)="onAttributeChange($event)">
-                            <mat-datepicker-toggle matSuffix [for]="preparationDate"></mat-datepicker-toggle>
+                            <mat-datepicker-toggle matSuffix [for]="requestedAssemblyDate"></mat-datepicker-toggle>
                             <mat-datepicker #preparationDate></mat-datepicker>
                         </mat-form-field>
                     </td>
