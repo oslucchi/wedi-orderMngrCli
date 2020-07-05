@@ -15,6 +15,7 @@ import { ShipmentPickupDialogComponent } from '@app/_components/shipment-pickup-
 import { AddShipmentComponent } from '../add-shipment/add-shipment.component';
 import { OrderShipments } from '@app/_models/order-shipments';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import * as moment from "moment";
 
 export const MY_FORMATS = {
   parse: {
@@ -600,18 +601,19 @@ export class OrderHandlerComponent implements OnInit {
     .subscribe(
         (res: HttpResponse<any>)=>{  
           console.log(res);
-          res.body.order.requestedAssemblyDate = new Date(res.body.order.requestedAssemblyDate);
-          res.body.order.effectiveAssemblyDate = new Date(res.body.order.effectiveAssemblyDate);
-          res.body.order.shipmentDate = new Date(res.body.order.shipmentDate);
-          this.orderList.forEach(item  => 
+          res.body.order.requestedAssemblyDate = new Date(res.body.order.requestedAssemblyDate + 60000 * 120);
+          res.body.order.effectiveAssemblyDate = new Date(res.body.order.effectiveAssemblyDate + 60000 * 120);
+          res.body.order.shipmentDate = new Date(res.body.order.shipmentDate + 60000 * 120);
+          var i: number;
+          for(i = 0; i < this.orderList.length; i++)
+          {
+            if (this.orderList[i].idOrder == res.body.order.idOrder)
             {
-              if (item.idOrder == res.body.order.idOrder)
-              {
-                item = res.body.order;
-              }
+              this.orderList[i] = res.body.order;
+              break;
             }
-          )
-          this.orderHandler.details = res.body.order;
+          }
+          // this.orderHandler.details = res.body.order;
     });
   }
 

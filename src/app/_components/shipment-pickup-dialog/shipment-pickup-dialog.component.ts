@@ -8,7 +8,8 @@ import { formatDate } from '@angular/common';
 import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, 
          MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
-import * as _moment from 'moment';
+import * as moment from 'moment';
+
 export const MY_FORMATS = {
   parse: {
       dateInput: 'DD/MM/YYYY',
@@ -98,6 +99,7 @@ export class ShipmentPickupDialogComponent implements OnInit {
 
   sendEmail()
   {
+    console.log(this.pickupDateVar);
     this.service
       .post(
         'utils/submitShipmentPickupRequest',
