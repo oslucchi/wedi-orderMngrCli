@@ -1,12 +1,12 @@
 export class OrderShipments {
-    idOrderShipment: number;
-    idOrder: number;
-	palletLength: number;
-	palletWidth: number;
-	palletHeigth: number;
-	palletWeigth: number;
-	numberOfItemsToShip: number;
-	forwarderCost: number;
-	clientCost: number;
-	note: string;
+    idOrderShipment: number = 0;
+    idOrder: number = 0;
+	palletLength: number = 0;
+	palletWidth: number = 0;
+	palletHeigth: number = 0;
+	palletWeigth: number = 0;
+	numberOfItemsToShip: number = 0;
+	forwarderCost: number = 0;
+	clientCost: number = 0;
+	note: string = "";
 }

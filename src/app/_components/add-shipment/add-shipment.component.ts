@@ -49,6 +49,7 @@ export class AddShipmentComponent implements OnInit {
     this.dataSourceShipments = new MatTableDataSource<OrderShipments>(this.shipments);
 
     this.dialogRef.backdropClick().subscribe(() => { this.closeForm(); });
+    this.shipment.idOrder = data.order.idOrder;
   }
 
   ngOnInit() 
@@ -64,7 +65,7 @@ export class AddShipmentComponent implements OnInit {
   newShipment()
   {
     this.shipment = new OrderShipments;
-    this.shipment.note = "";
+    this.shipment.idOrder = this.order.idOrder;
   }
 
   saveShipment()
