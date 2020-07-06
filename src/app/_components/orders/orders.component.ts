@@ -55,6 +55,7 @@ export class OrdersComponent implements OnInit {
     { def: 'customerDescription', hide: false }, 
     { def: 'customerDeliveryProvince', hide: true }, 
     { def: 'requestedAssemblyDate', hide: false }, 
+    { def: 'shipmentDate', hide: false }, 
     { def: 'sourceIssue', hide: false },
     { def: 'empty', hide: true },
     { def: 'compositionBoards', hide: false },
@@ -89,7 +90,18 @@ export class OrdersComponent implements OnInit {
 
   getOrdersDisplayedColumns():string[] 
   {
-    return this.ordersDisplayedColumns.filter(cd=>!cd.hide).map(cd=>cd.def);
+    if (this.profile.filters.filterInvoice[0] ||
+        this.profile.filters.filterShipment[0])
+    {
+      this.ordersDisplayedColumns.find(x => x.def == 'shipmentDate').hide = false;
+      this.ordersDisplayedColumns.find(x => x.def == 'requestedAssemblyDate').hide = true;
+    }
+    else
+    {
+      this.ordersDisplayedColumns.find(x => x.def == 'shipmentDate').hide = true;
+      this.ordersDisplayedColumns.find(x => x.def == 'requestedAssemblyDate').hide = false;
+    }
+  return this.ordersDisplayedColumns.filter(cd=>!cd.hide).map(cd=>cd.def);
   }
 
   ngOnInit() {
