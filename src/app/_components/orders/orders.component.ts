@@ -101,7 +101,7 @@ export class OrdersComponent implements OnInit {
       this.ordersDisplayedColumns.find(x => x.def == 'shipmentDate').hide = true;
       this.ordersDisplayedColumns.find(x => x.def == 'requestedAssemblyDate').hide = false;
     }
-  return this.ordersDisplayedColumns.filter(cd=>!cd.hide).map(cd=>cd.def);
+    return this.ordersDisplayedColumns.filter(cd=>!cd.hide).map(cd=>cd.def);
   }
 
   ngOnInit() {
