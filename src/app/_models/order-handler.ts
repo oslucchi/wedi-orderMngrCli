@@ -3,6 +3,7 @@ import { OrderNotes } from './order-notes';
 import { StatusItem } from '@app/_models/status-item';
 import { OrderShipments } from './order-shipments';
 import { CustomerDelivery } from './customer-delivery';
+import { Customers } from './customers';
 
 export class OrderHandler {
   public status: StatusItem[] = [
@@ -19,4 +20,5 @@ export class OrderHandler {
   public shipments: OrderShipments[] = new Array();
   public customerDelivery: CustomerDelivery = new CustomerDelivery;
   public statusPre: string;
+  public customer: Customers = new Customers();
 }

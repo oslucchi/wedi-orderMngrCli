@@ -16,6 +16,7 @@ import { AddShipmentComponent } from '../add-shipment/add-shipment.component';
 import { OrderShipments } from '@app/_models/order-shipments';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from "moment";
+import { OrderStatusChangeEmailComponent } from '../order-status-change-email/order-status-change-email.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -278,6 +279,7 @@ export class OrderHandlerComponent implements OnInit {
                   this.getOrdersBasedOnFilters.emit();
                 break;
               case "CON":
+                this.sendStatusChangeConfirmationEmail();
                 if (!this.profile.filters.filterOrders[UserProfileConstants.FILTER_ORDER_CONFIRMED])
                   this.getOrdersBasedOnFilters.emit();          
                   break;
@@ -296,8 +298,9 @@ export class OrderHandlerComponent implements OnInit {
                 break;
               case "RDY":
                 this.orderUpdatePackagingStatistics("autoEnd", 0);
+                this.sendStatusChangeConfirmationEmail();
                 if (!this.profile.filters.filterWarehouse[UserProfileConstants.FILTER_WHAREHOUSE_READY])
-                  this.getOrdersBasedOnFilters.emit();
+                    this.getOrdersBasedOnFilters.emit();
                 break;
               case "SHI":
                 if (!this.profile.filters.filterShipment[UserProfileConstants.FILTER_SHIPMENT_COMPLETED])
@@ -311,6 +314,26 @@ export class OrderHandlerComponent implements OnInit {
          }
       );
 
+  }
+
+  sendStatusChangeConfirmationEmail()
+  {
+    console.log("Sending status email change to customer");
+    this.service
+      .post(
+        "utils/statusEmail",
+        {
+          "order" : this.orderHandler.details,
+          "customer" : this.orderHandler.customer,
+          "customerDelivery" : this.orderHandler.customerDelivery
+        }
+      )
+      .subscribe(
+          (res: HttpResponse<any>)=>{
+            console.log(res.status);
+            console.log(res.body);
+          }
+      );
   }
 
   orderUpdatePackagingStatistics(what: string, value: number)
@@ -452,6 +475,15 @@ export class OrderHandlerComponent implements OnInit {
       );
   }
 
+  isLogisticMailConfigured()
+  {
+    if ((this.orderHandler.customerDelivery.logisticCommEmail != null) &&
+        (this.orderHandler.customerDelivery.logisticCommEmail != ""))
+      return true;
+    else
+      return false;
+  }
+
   onAttributeChange(event:any)
   {
     var sourceId: string;
@@ -498,6 +530,33 @@ export class OrderHandlerComponent implements OnInit {
         break;
 
       case "forwarder":
+        if ((value == "CLI") && !this.isLogisticMailConfigured())
+        {
+          const dialogConfig = new MatDialogConfig();
+
+          dialogConfig.disableClose = false;
+          dialogConfig.autoFocus = true;
+          dialogConfig.hasBackdrop = true;
+      
+          dialogConfig.data = {
+            id: 1,
+            caption: 'Mail variazioni ordine',
+            customer: this.orderHandler.customer,
+            customerDelivery: this.orderHandler.customerDelivery
+          };
+          
+          dialogConfig.height = '400px';
+          dialogConfig.width = '600px';
+      
+          let dialogRef = this.dialog.open(OrderStatusChangeEmailComponent, dialogConfig);
+          const sub = dialogRef.componentInstance.onClose.subscribe(() => {
+            console.log("onClose event emitted");
+            });
+          dialogRef.afterClosed().subscribe(() => {
+            // unsubscribe onAdd
+          });
+      
+        }
         this.orderHandler.details.forwarder = value;
         break;
 

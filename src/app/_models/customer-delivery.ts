@@ -6,4 +6,5 @@ export class CustomerDelivery {
 	zipCode: string;
 	city: string;
 	province: string;
+	logisticCommEmail: string;
 }

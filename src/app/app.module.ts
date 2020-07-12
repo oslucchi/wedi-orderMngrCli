@@ -21,6 +21,7 @@ import { ShipmentPickupDialogComponent } from './_components/shipment-pickup-dia
 import { AddShipmentComponent } from './_components/add-shipment/add-shipment.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatInputNumericDirective } from './_directives/mat-input-numeric.directive';
+import { OrderStatusChangeEmailComponent } from './_components/order-status-change-email/order-status-change-email.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { MatInputNumericDirective } from './_directives/mat-input-numeric.direct
     MsgBoxComponent,
     ShipmentPickupDialogComponent,
     AddShipmentComponent,
-    MatInputNumericDirective
+    MatInputNumericDirective,
+    OrderStatusChangeEmailComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,8 @@ import { MatInputNumericDirective } from './_directives/mat-input-numeric.direct
   bootstrap: [AppComponent],
   entryComponents: [
     ShipmentPickupDialogComponent, 
-    AddShipmentComponent
+    AddShipmentComponent,
+    OrderStatusChangeEmailComponent
   ]
 })
 export class AppModule { }

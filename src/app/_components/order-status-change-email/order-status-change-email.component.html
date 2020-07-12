@@ -1,0 +1,48 @@
+<table>
+    <tr style='text-align: left; width: 100%'>
+        <td>
+            <mat-label class="mat-body">Email specifica per indirizzo di destinazione:</mat-label>
+            <br>
+            <mat-label class="mat-body" style='font-weight: bold;'>
+                    {{ customerDelivery.address }} &nbsp; {{ customerDelivery.zipCode }} &nbsp; {{ customerDelivery.city }}
+            </mat-label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-form-field appearance="fill" [style.width.px]=500>
+                <mat-label>email</mat-label>
+                <input matInput id="logisticCommEmail" type="email"
+                        [(ngModel)]="customerDelivery.logisticCommEmail"
+                        (change)="saveCustomerDelivery()"
+                        [email]="true"
+                >
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+    <tr style='text-align: left;'>
+        <td>
+            <mat-label class="mat-body">Email generica per il cliente:</mat-label>
+            <br>
+            <mat-label class="mat-body" style='font-weight: bold;'>
+                {{ customer.refERP }} &nbsp; {{ customer.description }}
+            </mat-label>
+        </td>
+    </tr>
+    <tr style='text-align: left;'>
+        <td>
+            <mat-form-field appearance="fill" [style.width.px]=500>
+                <mat-label>email</mat-label>
+                <input matInput id="multiSiteGenericEmail" type="email"
+                        [(ngModel)]="customer.logisticCommEmail"
+                        (change)="saveCustomer()"
+                        [email]="true"
+                >
+            </mat-form-field>
+        </td>
+    </tr>
+</table>
+<button mat-button id="close" (click)="closeForm()">Chiudi</button>

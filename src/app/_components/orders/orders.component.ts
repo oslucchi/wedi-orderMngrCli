@@ -144,6 +144,7 @@ export class OrdersComponent implements OnInit {
                   this.orderHandler.shipments = res.body.orderShipments;
                   this.orderHandler.customerDelivery = res.body.customerDelivery;
                   this.orderHandler.statusPre = this.orderHandler.details.status;
+                  this.orderHandler.customer = res.body.customer;
                   this.statusTransitionEval(item.status);
                   if (this.orderHandler.details.orderValue == 0)
                   {
@@ -386,6 +387,7 @@ export class OrdersComponent implements OnInit {
           this.orderHandler.shipments = res.body.orderShipments;
           this.orderHandler.customerDelivery = res.body.customerDelivery;
           this.orderHandler.statusPre = this.orderHandler.details.status;
+          this.orderHandler.customer = res.body.customer;
           this.statusTransitionEval(order.status);
           if (this.orderHandler.details.orderValue == 0)
           {
