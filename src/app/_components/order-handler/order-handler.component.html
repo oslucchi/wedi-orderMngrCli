@@ -6,9 +6,20 @@
                 &nbsp;
                 <mat-label>{{ orderHandler.details.orderRef }} {{ orderHandler.details.customerDescription }} </mat-label>
                 &nbsp;
-                <mat-label>- Valore</mat-label>
-                &nbsp;
+                <mat-form-field appearance="fill">
+                    <mat-label>- Valore</mat-label>
+<!--
                 <mat-label>{{ orderValue | number:'.2-2' }}&euro;</mat-label>
+-->
+                    <input matInput
+                            matInputNumeric
+                            id="orderValue"
+                            decimals="0"
+                            [(ngModel)]="orderValue"
+                            (change)="onAttributeChange($event)"
+                            maxlength="5"
+                            type="text" style='font-size: small;font-weight: bold;' >
+                </mat-form-field>
             </p>
         </td>
     </tr>

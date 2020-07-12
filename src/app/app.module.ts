@@ -20,6 +20,7 @@ import { MsgBoxComponent } from './_components/msg-box/msg-box.component';
 import { ShipmentPickupDialogComponent } from './_components/shipment-pickup-dialog/shipment-pickup-dialog.component';
 import { AddShipmentComponent } from './_components/add-shipment/add-shipment.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatInputNumericDirective } from './_directives/mat-input-numeric.directive';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     OrderHandlerComponent,
     MsgBoxComponent,
     ShipmentPickupDialogComponent,
-    AddShipmentComponent
+    AddShipmentComponent,
+    MatInputNumericDirective
   ],
   imports: [
     BrowserModule,

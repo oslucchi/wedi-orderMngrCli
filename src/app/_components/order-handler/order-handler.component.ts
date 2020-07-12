@@ -266,7 +266,6 @@ export class OrderHandlerComponent implements OnInit {
         'orders/update/' + this.orderHandler.details.idOrder,
         {
           "order": this.orderHandler.details,
-          "buyValue" : this.orderValue | 0
         }
       )
       .subscribe(
@@ -352,7 +351,6 @@ export class OrderHandlerComponent implements OnInit {
               'orders/update/' + this.orderHandler.details.idOrder,
               {
                 "order": this.orderHandler.details,
-                "buyValue": this.orderValue | 0
               }
             )
             .subscribe(
@@ -507,6 +505,10 @@ export class OrderHandlerComponent implements OnInit {
         this.orderHandler.details.requestedAssemblyDate = new Date(value);
         break;
 
+      case "orderValue":
+        this.orderHandler.details.orderValue = value;
+        break;
+
       case "assemblyTime":
         this.orderUpdatePackagingStatistics("manual",  parseInt(value, 10));
         break;
@@ -595,7 +597,6 @@ export class OrderHandlerComponent implements OnInit {
       {
         "order": this.orderHandler.details,
         "shipments": this.orderHandler.shipments,
-        "buyValue" : this.orderValue | 0
       }
     )
     .subscribe(

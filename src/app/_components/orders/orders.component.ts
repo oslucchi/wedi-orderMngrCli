@@ -145,13 +145,20 @@ export class OrdersComponent implements OnInit {
                   this.orderHandler.customerDelivery = res.body.customerDelivery;
                   this.orderHandler.statusPre = this.orderHandler.details.status;
                   this.statusTransitionEval(item.status);
-                  this.orderValue = 0;
-                  res.body.orderDetails.forEach( item => {
-                    this.orderValue += 
-                        res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *
-                                                            item.quantity * item.articleRateOfConversion;
-                  });
-        
+                  if (this.orderHandler.details.orderValue == 0)
+                  {
+                    this.orderValue = 0;
+                    res.body.orderDetails.forEach( item => {
+                      this.orderValue += 
+                          res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *
+                                                              item.quantity * item.articleRateOfConversion;
+                    });
+                    this.orderValue = Math.floor(this.orderValue);
+                  }
+                  else
+                  {
+                    this.orderValue = Math.floor(this.orderHandler.details.orderValue);
+                  }
                 }
                 this.orderDetails = res.body.orderDetails;
 
@@ -380,12 +387,21 @@ export class OrdersComponent implements OnInit {
           this.orderHandler.customerDelivery = res.body.customerDelivery;
           this.orderHandler.statusPre = this.orderHandler.details.status;
           this.statusTransitionEval(order.status);
+          if (this.orderHandler.details.orderValue == 0)
+          {
+            this.orderValue = 0;
+            res.body.orderDetails.forEach( item => {
+              this.orderValue += 
+                  res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *
+                                                      item.quantity * item.articleRateOfConversion;
+            });
+            this.orderValue = Math.floor(this.orderValue);
+          }
+          else
+          {
+            this.orderValue = Math.floor(this.orderHandler.details.orderValue);
+          }
 
-          this.orderValue = 0;
-          this.orderDetails.forEach( item => {
-            this.orderValue += res.body.orderArticles.find(x => x.idArticle === item.idArticle).buyPrice *
-                               item.quantity * item.articleRateOfConversion;
-          });
           return;
         }
       );
