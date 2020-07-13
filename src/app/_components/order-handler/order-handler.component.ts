@@ -330,8 +330,12 @@ export class OrderHandlerComponent implements OnInit {
       )
       .subscribe(
           (res: HttpResponse<any>)=>{
-            console.log(res.status);
-            console.log(res.body);
+            console.log(res);
+            var alertMsg: string = res.body.resource;
+            if ((res.status == 200) && (alertMsg != null))
+            {
+              window.alert(alertMsg);
+            }
           }
       );
   }
