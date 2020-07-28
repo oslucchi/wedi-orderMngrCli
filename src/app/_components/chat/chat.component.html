@@ -1,0 +1,29 @@
+<div *ngIf="!logged">
+    <label>Nome: </label>
+    <input id="name" type="text" [(ngModel)]="name">
+    <button (click)="logon()">Logon</button>
+</div>
+<div *ngIf="logged">
+    <textarea id="output">{{ textarea }}</textarea>
+    <mat-form-field appearance="fill">
+        <mat-label>Tipo msg</mat-label>
+        <mat-select [(ngModel)]="msgType">
+            <div *ngFor="let item of msgTypeList;" >
+                <mat-option [value]="item.id" [disabled]="item.disabled" >{{ item.des }}</mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+
+    <br>
+    Utenti in linea
+    <select id="userList"
+            [(ngModel)]="tokenSelected" 
+            (change)="setSelected($event)">
+        <option *ngFor="let u of userList;" [(ngValue)]="u.token" >
+            {{ u.account }}
+        </option>
+    </select>
+    <input type="text" id="input" [(ngModel)]="msg.text">
+    <br>
+    <button (click)="sendMsg()">Send</button>
+</div>

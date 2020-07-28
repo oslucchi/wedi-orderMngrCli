@@ -62,8 +62,11 @@ export class UserProfile {
 
     setProfile()
     {
+        var now = new Date(), 
+            expires = new Date(now.getFullYear() + 1, now.getMonth() + 1, now.getDate());
         var profileString = JSON.stringify(this.filters);
-        this.cookieService.set('userProfile', profileString);
+        
+        this.cookieService.set('userProfile', profileString, expires);
     }
 
     getStatusWhereString()

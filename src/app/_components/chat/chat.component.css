@@ -1,0 +1,6 @@
+textarea {
+    width: 450px;
+    height: 150px;
+    overflow-y: scroll;
+    resize: none; 
+}
