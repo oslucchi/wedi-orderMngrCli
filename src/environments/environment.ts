@@ -4,10 +4,11 @@
 export const environment = {
   production: false,
   // host: "http://192.168.60.108:8080",
+  // host: "http://l-soft.ddns.net:8080",
   host: "http://localhost:8080",
   baseURL: "/orderMngr",
   baseHref: "",
-  CHAT_URL: "ws://127.0.0.1:8080/orderMngr/endpoint"
+  CHAT_URL: "ws://localhost:8080/orderMngr/endpoint"
 };
 /*
  * For easier debugging in development mode, you can import the following file

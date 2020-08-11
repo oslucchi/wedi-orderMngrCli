@@ -5,6 +5,7 @@ import { WebsocketService } from "./websocket.service";
 import { Message } from '@app/_models/message';
 import { environment } from 'environments/environment';
 import { map } from 'rxjs/operators';
+import { ɵAnimationGroupPlayer } from '@angular/animations';
 
 @Injectable()
 export class ChatService {
@@ -36,7 +37,8 @@ export class ChatService {
 
   send(message : Message)
   {
-    console.log("Sending message '" + message + "'");
-    this.messages.next(message);
+    let clientMsg = Object.assign({}, message);
+    console.log("Sending message '" + clientMsg.text + "' to " + clientMsg.recipient);
+    this.messages.next(clientMsg);
   }
 }

@@ -4,3 +4,7 @@ textarea {
     overflow-y: scroll;
     resize: none; 
 }
+
+input {
+    width: 300px;
+}

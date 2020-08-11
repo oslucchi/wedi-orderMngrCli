@@ -12,14 +12,14 @@ import { toBase64String } from '@angular/compiler/src/output/source_map';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  private msg: Message = new Message();
+  public msg: Message = new Message();
   public textarea: string = "";
   public msgType: number = Message.MSG_BROADCAST;
   public userList: User[] = new Array();
   public logged: boolean = false;
   public name: string;
   private token: string = "";
-  private tokenSelected: string;
+  public tokenSelected: string;
   private today: Date;
   public msgTypeList: any = [
     { id: Message.MSG_PRIVATE, des: "Privato", selected: false, disabled: false},
@@ -30,7 +30,6 @@ export class ChatComponent implements OnInit {
   constructor(public chatService: ChatService,
               public datepipe: DatePipe,
               public cookieService: CookieService) {
-    this.chatService.openSocket();
     this.chatService.messages.subscribe(msg => {
       console.log("Message from WebSocket Server: " + msg);
       var from: string = "";
@@ -85,17 +84,22 @@ export class ChatComponent implements OnInit {
     {
       this.msg.type = Message.MSG_LOG_WITH_TOKEN;
       this.msg.sender = this.cookieService.get('chatName');;
+      this.name = this.msg.sender;
       this.msg.recipient = "server";
       this.msg.recipientToken = "";
       this.msg.senderToken = this.cookieValue;
       this.msg.text = "logon with token";
       this.msg.token = this.cookieValue;
+      console.log("Trying to connect the websocket after the page is up on user '" +
+                  this.msg.sender + "' token '" + this.msg.token + "'");
       this.chatService.messages.next(this.msg);
       this.msg.recipient = "";
       this.msg.text = "";
-      this.msg.token = "";
-    }
-    console.log("the component should have been initialized");
+    }  
+  }
+
+  ngAfterViewInit()
+  {
   }
 
   sendMsg() 
@@ -119,7 +123,7 @@ export class ChatComponent implements OnInit {
     this.msg.token = this.token;
     this.msg.recipientToken = user.token;
     this.msg.recipient = user.account;
-    this.chatService.messages.next(this.msg);
+    this.chatService.send(this.msg);
     this.today  = new Date();
     this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] -> " +
                      this.msg.recipient + ": " + this.msg.text + "\n";
@@ -132,7 +136,6 @@ export class ChatComponent implements OnInit {
     this.msg.type = Message.MSG_LOGON;
     this.msg.sender = this.name;
     this.msg.recipient = "server";
-    this.msg.token = "";
     this.msg.text = "logon";
     this.chatService.messages.next(this.msg);
     this.msg.recipient = "";
@@ -142,7 +145,11 @@ export class ChatComponent implements OnInit {
   setSelected(event:any)
   {
     console.log("Selected token '" + this.tokenSelected +"'");
+    this.userList.forEach(item => {
+      item.selected = false;
+    });
     this.userList.find(x => x.token === this.tokenSelected).selected = true;
-    this.userList.find(x => x.token != this.tokenSelected).selected = false;
+
+
   }
 }

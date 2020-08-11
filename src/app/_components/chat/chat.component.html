@@ -4,6 +4,8 @@
     <button (click)="logon()">Logon</button>
 </div>
 <div *ngIf="logged">
+    <mat-label style='text-align: center;'>Utente: {{ name }}</mat-label>
+
     <textarea id="output">{{ textarea }}</textarea>
     <mat-form-field appearance="fill">
         <mat-label>Tipo msg</mat-label>
@@ -13,9 +15,18 @@
             </div>
         </mat-select>
     </mat-form-field>
-
-    <br>
-    Utenti in linea
+    &nbsp;
+    <mat-form-field *ngIf="msgType==4" appearance="fill">
+        <mat-label>Utenti in linea</mat-label>
+        <mat-select id="userList" 
+                    [(ngModel)]="tokenSelected" 
+                    (selectionChange)="setSelected($event)">
+            <div *ngFor="let u of userList;" >
+                <mat-option [value]="u.token" [disabled]="u.disabled" >{{ u.account }}</mat-option>
+            </div>
+        </mat-select>
+    </mat-form-field>
+<!--
     <select id="userList"
             [(ngModel)]="tokenSelected" 
             (change)="setSelected($event)">
@@ -23,7 +34,11 @@
             {{ u.account }}
         </option>
     </select>
-    <input type="text" id="input" [(ngModel)]="msg.text">
-    <br>
-    <button (click)="sendMsg()">Send</button>
+-->
+    <div>
+        Messaggio:
+        <input type="text" id="input" [(ngModel)]="msg.text">
+        &nbsp;
+        <button (click)="sendMsg()">Send</button>
+    </div>    
 </div>
