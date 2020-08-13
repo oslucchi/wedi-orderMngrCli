@@ -92,7 +92,7 @@ export class ChatComponent implements OnInit {
       this.msg.token = this.cookieValue;
       console.log("Trying to connect the websocket after the page is up on user '" +
                   this.msg.sender + "' token '" + this.msg.token + "'");
-      this.chatService.messages.next(this.msg);
+      this.chatService.send(this.msg);
       this.msg.recipient = "";
       this.msg.text = "";
     }  
@@ -123,6 +123,7 @@ export class ChatComponent implements OnInit {
     this.msg.token = this.token;
     this.msg.recipientToken = user.token;
     this.msg.recipient = user.account;
+    console.log("sendMsg: sending msg via chatService: '" + JSON.stringify(this.msg) +"'");
     this.chatService.send(this.msg);
     this.today  = new Date();
     this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] -> " +
@@ -137,7 +138,11 @@ export class ChatComponent implements OnInit {
     this.msg.sender = this.name;
     this.msg.recipient = "server";
     this.msg.text = "logon";
-    this.chatService.messages.next(this.msg);
+    this.msg.senderToken = "";
+    this.msg.recipientToken = "";
+    this.msg.token = "";
+    console.log("logon: sending msg via chatService: '" + JSON.stringify(this.msg) +"'");
+    this.chatService.send(this.msg);
     this.msg.recipient = "";
     this.msg.text = ""; 
   }
@@ -149,7 +154,5 @@ export class ChatComponent implements OnInit {
       item.selected = false;
     });
     this.userList.find(x => x.token === this.tokenSelected).selected = true;
-
-
   }
 }

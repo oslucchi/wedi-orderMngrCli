@@ -21,8 +21,7 @@ export class WebsocketService {
   waitForSocketConnection(socket: WebSocket, callback: any, numOfRun: number)
   {
     console.log("waiting for socket openend: " + numOfRun++)
-    setTimeout(
-        function () {
+    setTimeout(() => {
             if (socket.readyState === WebSocket.OPEN) 
             {
                 if (callback != null)
@@ -34,9 +33,8 @@ export class WebsocketService {
             {
                 this.waitForSocketConnection(socket, callback, numOfRun);
             }
-
-        }, 200); // wait 5 milisecond for the connection...
-}
+        }, 100); // wait 100 milisecond for the connection...
+  }
 
   public connect(url): Rx.Subject<MessageEvent> {
     if (!this.subject) {

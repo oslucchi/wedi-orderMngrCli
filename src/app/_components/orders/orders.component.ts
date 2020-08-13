@@ -37,6 +37,7 @@ export class OrdersComponent implements OnInit {
   private cookieService: CookieService;
 
   public status: StatusItem[] = [
+    { id: "CAN", des: "Cancellato", selected: false, disabled: true },
     { id: "SYS", des: "Inserito a sistema", selected: false, disabled: true },
     { id: "ONH", des: "Sospeso", selected: false, disabled: true },
     { id: "CON", des: "Confermato", selected: false, disabled: true },
@@ -301,6 +302,7 @@ export class OrdersComponent implements OnInit {
 
   statusTransitionEval(status: string)
   {
+    this.status.find(x => x.id == "CAN").disabled = true;
     this.status.find(x => x.id == "ONH").disabled = true;
     this.status.find(x => x.id == "PRE").disabled = true;
     this.status.find(x => x.id == "SYS").disabled = true;
@@ -319,6 +321,7 @@ export class OrdersComponent implements OnInit {
         break;
 
       case "ONH":
+        this.status.find(x => x.id == "CAN").disabled = false;
         this.status.find(x => x.id == "SYS").disabled = false;
         this.status.find(x => x.id == "CON").disabled = false;
         this.status.find(x => x.id == "COE").disabled = false;
