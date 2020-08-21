@@ -1,5 +1,5 @@
 <h1 class="mat-h1" style='text-align: center;'>
-        Ordini da segnalare a trasportatore {{ forwarder }}
+        Ordini da segnalare a trasportatore {{ forwarderVar }}
 </h1>
 <table>
     <tr>
@@ -7,7 +7,8 @@
             <mat-form-field>
                 <mat-label>Vettore</mat-label>
                 <mat-select id="forwarder"
-                            [(ngModel)]="forwarderVar">
+                            [(ngModel)]="forwarderVar"
+                            (selectionChange)="onForwarderChange($event)">
                     <div *ngFor="let item of forwarders;">
                         <mat-option [value]="item.id" >{{ item.des }}</mat-option>
                     </div>

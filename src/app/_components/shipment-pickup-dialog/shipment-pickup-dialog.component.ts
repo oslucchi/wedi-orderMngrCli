@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA, 
-         DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
+         DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDialogConfig } from '@angular/material';
 import { Shipment } from '@app/_models/shipment';
 import { ApiService } from '@app/_services/api.service';
 import { HttpResponse } from '@angular/common/http';
@@ -53,7 +53,8 @@ export class ShipmentPickupDialogComponent implements OnInit {
 
   public forwarders: any[] = [
     { id: "CES", des: "CESPED", selected: false },
-    { id: "TWS", des: "TWS - Collettame", selected: false }
+    { id: "TWS", des: "TWS - Collettame", selected: false },
+    { id: "GLS", des: "GLS - Collettame", selected: false }
   ];
 
   public forwarderVar: string;
@@ -75,7 +76,7 @@ export class ShipmentPickupDialogComponent implements OnInit {
     this.shipmentList = data.shipmentList;
     this.dataSource = new MatTableDataSource<Shipment>(this.shipmentList);
     this.title = data.title;
-    this.forwarder = data.forwarder;
+    this.forwarderVar = this.forwarder = data.forwarder;
     this.service = apiService;
   }
 
@@ -104,7 +105,7 @@ export class ShipmentPickupDialogComponent implements OnInit {
       .post(
         'utils/submitShipmentPickupRequest',
         {
-          "forwarder": this.forwarder,
+          "forwarder": this.forwarderVar,
           "pickupDate": this.pickupDateVar,
           "shipmentList" : this.shipmentList
         }
@@ -120,5 +121,23 @@ export class ShipmentPickupDialogComponent implements OnInit {
 
   closeDialog(){
       this.dialogRef.close();
+  }
+
+  onForwarderChange(event:any)
+  {
+    console.log("get shipments for forwarder: '" + event + "'");
+    this.service
+    .post(
+      'utils/createShipments',
+      {
+        'forwarder' : this.forwarderVar
+      }
+    )
+    .subscribe(
+      (res: HttpResponse<any>)=>{  
+        console.log(res);
+        this.dataSource = this.shipmentList = res.body.shipmentList;
+      }
+    );
   }
 }

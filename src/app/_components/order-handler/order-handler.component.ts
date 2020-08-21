@@ -61,7 +61,8 @@ export class OrderHandlerComponent implements OnInit {
     { id: "CES", des: "CESPED", selected: false },
     { id: "TWS", des: "TWS - Collettame", selected: false },
     { id: "CLI", des: "Ritiro cliente", selected: false },
-    { id: "DIR", des: "Consegna diretta", selected: false },
+    { id: "GLS", des: "GLS - Collettame", selected: false },
+    { id: "DIR", des: "Consegna diretta", selected: false }
   ]
 
   constructor(private apiService: ApiService,

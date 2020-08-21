@@ -31,7 +31,8 @@ export class ChatComponent implements OnInit {
               public datepipe: DatePipe,
               public cookieService: CookieService) {
     this.chatService.messages.subscribe(msg => {
-      console.log("Message from WebSocket Server: " + msg);
+      console.log("Message from WebSocket Server: " + msg.idMessage + 
+                  " type: " + msg.type);
       var from: string = "";
       var now = new Date(), 
           expires = new Date(now.getFullYear() + 1, now.getMonth() + 1, now.getDate());
@@ -70,8 +71,9 @@ export class ChatComponent implements OnInit {
           case Message.MSG_BROADCAST:
           case Message.MSG_PRIVATE:
             this.today  = new Date();
-            this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] <- " +
-                            msg.sender + ": " + msg.text + "\n";
+            this.textarea += "[" + this.datepipe.transform(msg.timestamp, 'HH:mm:ss') + "] <= " +
+                            msg.sender + (msg.type == Message.MSG_BROADCAST ? " (B)" : "" ) +
+                            ": " + msg.text + "\n";
             break;
       }
     });
@@ -126,7 +128,7 @@ export class ChatComponent implements OnInit {
     console.log("sendMsg: sending msg via chatService: '" + JSON.stringify(this.msg) +"'");
     this.chatService.send(this.msg);
     this.today  = new Date();
-    this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] -> " +
+    this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] => " +
                      this.msg.recipient + ": " + this.msg.text + "\n";
     this.msg.recipient = "";
     this.msg.text = ""; 

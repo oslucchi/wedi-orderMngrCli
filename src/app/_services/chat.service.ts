@@ -23,6 +23,8 @@ export class ChatService {
           console.log(response.data);
           let data = JSON.parse(response.data);
           return {
+            idMessage: data.idMessage,
+            timestamp: data.timestamp,
             type: data.type,
             sender: data.sender,
             recipient: data.recipient,

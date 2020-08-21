@@ -10,11 +10,13 @@ export class Message {
     static MSG_HISTORY = 9;
     static MSG_LOGON_DENY = 10;
 
+    idMessage: number;
+    timestamp: Date;
     type: number;
-    sender: string;
     recipient: string;
+    sender: string;
     text: any;
+    token: string;
     senderToken: string;
     recipientToken: string;
-    token: string;
 }
