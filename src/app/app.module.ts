@@ -23,9 +23,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatInputNumericDirective } from './_directives/mat-input-numeric.directive';
 import { OrderStatusChangeEmailComponent } from './_components/order-status-change-email/order-status-change-email.component';
 import { ChatComponent } from './_components/chat/chat.component';
-import { WebsocketService } from './_services/websocket.service';
-import { ChatService } from './_services/chat.service';
 import { DatePipe } from '@angular/common';
+import { AutoRefreshComponent } from './_components/auto-refresh/auto-refresh.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,8 @@ import { DatePipe } from '@angular/common';
     AddShipmentComponent,
     MatInputNumericDirective,
     OrderStatusChangeEmailComponent,
-    ChatComponent
+    ChatComponent,
+    AutoRefreshComponent
   ],
   imports: [
     BrowserModule,
@@ -61,8 +61,6 @@ import { DatePipe } from '@angular/common';
   providers: [
     CookieService, 
     MatMomentDateModule,
-    WebsocketService,
-    ChatService,
     DatePipe
   ],
   bootstrap: [AppComponent],

@@ -2,7 +2,18 @@ textarea {
     width: 450px;
     height: 150px;
     overflow-y: scroll;
-    resize: none; 
+    resize: none;
+    background-color: #ffffff;
+}
+
+div#output {
+    max-width: 475px;
+    min-height: 140px;
+    max-height: 140px;
+    overflow-y: auto;
+    resize: none;
+    white-space: pre;
+    font-size: 14px;
 }
 
 input {

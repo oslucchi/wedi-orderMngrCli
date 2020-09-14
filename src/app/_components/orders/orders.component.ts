@@ -9,20 +9,42 @@ import { ɵAnimationGroupPlayer } from '@angular/animations';
 import { CookieService } from 'ngx-cookie-service';
 import { UserProfile, UserProfileConstants } from '@app/_models/user-profile';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatSelectChange, MatInput } from '@angular/material';
+import { MatSelectChange, MatInput, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
 import { MatSort } from '@angular/material/sort';
 import { OrderHandler } from '@app/_models/order-handler';
 import { OrderShipments } from '@app/_models/order-shipments';
 import { Articles } from '@app/_models/articles';
 import { StatusItem } from '@app/_models/status-item';
+import { SearchFilters } from '@app/_models/search-filter';
+
+export const MY_FORMATS = {
+  parse: {
+      dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+      dateInput: 'DD/MM/YYYY',
+      monthYearLabel: 'MM YYYY',
+      dateA11yLabel: 'DD/MM/YYYY',
+      monthYearA11yLabel: 'MM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.css']
+  styleUrls: ['./orders.component.css'],
+  providers: [{
+    provide: MAT_DATE_LOCALE,
+    useValue: 'it'
+  },
+  {
+    provide: MAT_DATE_FORMATS,
+    useValue: MY_FORMATS
+  }]
 })
 
 export class OrdersComponent implements OnInit {
+  public bogusDataSource: MatTableDataSource<Orders>;
   public dataSource: MatTableDataSource<Orders>;
   public dataSourceDetails: MatTableDataSource<OrderDetails>;
   public dataSourceShipments: MatTableDataSource<OrderShipments>;
@@ -46,7 +68,13 @@ export class OrdersComponent implements OnInit {
     { id: "RDY", des: "Pronto", selected: false, disabled: true },
     { id: "SHI", des: "Spedito", selected: false, disabled: true },
     { id: "INV", des: "Fatturato", selected: false, disabled: true }
-  ]
+  ];
+
+  public additionalSearchFilter: SearchFilters = new SearchFilters();
+  // public additionalSearchFilterCustomer: string;
+  // public additionalSearchFilterOrder: number;
+  // public additionalSearchFilterFromDate: Date;
+  // public additionalSearchFilterToDate: Date;
 
   private ordersDisplayedColumns: any[] = [
     { def: 'status', hide: false }, 
@@ -82,6 +110,7 @@ export class OrdersComponent implements OnInit {
     console.log("orders constructor");  
     this.service = apiService; 
     this.cookieService = cookieServ;
+    this.bogusDataSource = new MatTableDataSource<Orders>();
   }
 
   getDetailsDisplayedColumns():string[]
@@ -232,6 +261,8 @@ export class OrdersComponent implements OnInit {
       this.dataSource = new MatTableDataSource<Orders>(new Array<Orders>());
       this.dataSourceDetails = new MatTableDataSource<OrderDetails>(new Array<OrderDetails>());
       this.orderHandler = new OrderHandler;
+      this.setFilters();
+      this.applyFilters();
       return;
     }
     this.service
@@ -246,7 +277,9 @@ export class OrdersComponent implements OnInit {
             this.orderList = res.body.orderList;
             this.dataSource = new MatTableDataSource<Orders>(this.orderList);
             this.dataSource.sort = this.sort;
+            this.setFilters();
             this.getOrderDetails();
+            this.applyFilters();
           }
       );
   }
@@ -413,4 +446,49 @@ export class OrdersComponent implements OnInit {
     this.dataSourceDetails = null;
     this.orderHandler = new OrderHandler;
   };
+  
+  setFilters()
+  {
+    var showRecord : boolean;
+
+    this.dataSource.filterPredicate = (data, filter) => {
+      // return (this.profile.filters.filterInvoice[0] || this.profile.filters.filterShipment[0] ?
+      //               (this.additionalSearchFilter.fromDate != null ? data.shipmentDate >= this.additionalSearchFilter.fromDate : true) &&
+      //               (this.additionalSearchFilter.toDate != null ? data.shipmentDate <= this.additionalSearchFilter.toDate : true)
+      //           :
+      //               (this.additionalSearchFilter.fromDate != null ? data.requestedAssemblyDate >= this.additionalSearchFilter.fromDate : true) &&
+      //               (this.additionalSearchFilter.toDate != null ? data.requestedAssemblyDate <= this.additionalSearchFilter.toDate : true)) && 
+      //         (this.additionalSearchFilter.order.trim() != "" ? data.orderRef.includes("IM0" + this.additionalSearchFilter.order) : true) && 
+      //         (this.additionalSearchFilter.customer.trim() != "" ? data.customerRefERP.includes("I" + this.additionalSearchFilter.customer) : true);
+      showRecord = true;
+      if (this.additionalSearchFilter.customer && (this.additionalSearchFilter.customer != ""))
+      {
+        showRecord = showRecord && data.customerDescription.toUpperCase().includes(this.additionalSearchFilter.customer.toUpperCase());
+      }
+      if (this.additionalSearchFilter.order && (this.additionalSearchFilter.order != ""))
+      {
+        showRecord = showRecord && data.orderRef.includes(this.additionalSearchFilter.order);
+      }
+      if (this.additionalSearchFilter.fromDate)
+      {
+        showRecord = showRecord && data.shipmentDate >= this.additionalSearchFilter.fromDate;
+      }
+      if (this.additionalSearchFilter.toDate)
+      {
+        showRecord = showRecord && data.shipmentDate <= this.additionalSearchFilter.toDate;
+      }
+      return showRecord
+    }
+  }
+
+  applyFilters()
+  {
+    this.dataSource.filter = "" + Math.random();
+  }
+
+  cancelFilters()
+  {
+    this.additionalSearchFilter = new SearchFilters();
+    this.dataSource.filter = "" + Math.random();
+  }
 }

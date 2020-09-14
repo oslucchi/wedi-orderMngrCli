@@ -9,6 +9,8 @@ export class Message {
     static MSG_LOG_WITH_TOKEN = 8;
     static MSG_HISTORY = 9;
     static MSG_LOGON_DENY = 10;
+    static MSG_KEEP_ALIVE = 11;
+    static MSG_KEEP_ALIVE_RESPONSE = 12;
 
     idMessage: number;
     timestamp: Date;

@@ -12,7 +12,8 @@ export class OrderHandler {
     {id: "COE", des: "Confermato con eccezione", selected: false, disabled: true},
     {id: "PRE", des: "In preparazione", selected: false, disabled: true},
     {id: "RDY", des: "Pronto", selected: false, disabled: true},
-    {id: "SHI", des: "Spedito", selected: false, disabled: true}
+    {id: "SHI", des: "Spedito", selected: false, disabled: true},
+    {id: "INV", des: "Fatturato", selected: false, disabled: true}
   ];
 
   public details: Orders = new Orders;

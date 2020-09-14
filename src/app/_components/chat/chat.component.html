@@ -6,7 +6,12 @@
 <div *ngIf="logged">
     <mat-label style='text-align: center;'>Utente: {{ name }}</mat-label>
     <br>
-    <textarea id="output">{{ textarea }}</textarea>
+<!--
+    <textarea id="output" readonly>{{ textarea }}</textarea>
+-->
+    <div #scrollMe id='output' [scrollTop]="scrollMe.scrollHeight">
+        {{ textarea }}
+    </div>
     <br>
     <mat-form-field appearance="fill">
         <mat-label>Tipo msg</mat-label>
@@ -32,6 +37,13 @@
         Messaggio:
         <input type="text" id="input" [(ngModel)]="msg.text">
         &nbsp;
-        <button (click)="sendMsg()">Send</button>
-    </div>    
+        <button (click)="sendMsg()" [disabled]="!connectionStatus">Send</button>
+    </div>
+    <app-auto-refresh
+        (TimerExpired)="keepAlive()" 
+        [timerSet]="timerSet" 
+        [(timerReset)]="timerReset"
+        [hidden]="true">
+    </app-auto-refresh
+        >
 </div>

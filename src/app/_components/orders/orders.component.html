@@ -89,6 +89,7 @@
                         <td>
                         </td>
                     </tr>
+<!--
                     <tr>
                         <td>
                             <mat-checkbox labelPosition="after" id='ORA' [(ngModel)]="profile.filters.filterOrders[4]"
@@ -107,10 +108,71 @@
                         <td>
                         </td>
                     </tr>
+-->
+                    <tr>
+                        <td colspan="3" style='text-align: center'>
+                            <p style='text-align: center; font-weight:bold'>
+                                FILTRI AGGIUNTIVI
+                                &nbsp;
+                                <a href="javascript: void(0);" (click)="applyFilters()">Applica</a>
+                                &nbsp;
+                                <a href="javascript: void(0);" (click)="cancelFilters()">Cancella</a>
+                            </p>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <mat-form-field appearance="fill" [style.width.px]=100>
+                                <mat-label>Cliente: </mat-label>
+                                <input matInput
+                                        id="searchFilterCustomer"
+                                        [(ngModel)]="additionalSearchFilter.customer"
+                                        (change)="setFilters()"
+                                        maxlength="16"
+                                        type="text" style='font-size: small;' >
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field appearance="fill" [style.width.px]=70>
+                                <mat-label>Ordine: </mat-label>
+                                <input matInput
+                                        matInputNumeric
+                                        id="searchFilterOrder"
+                                        decimals="0"
+                                        [(ngModel)]="additionalSearchFilter.order"
+                                        (change)="setFilters()"
+                                        maxlength="5"
+                                        type="text" style='font-size: small;' >
+                            </mat-form-field>            
+                            &nbsp;
+                            <mat-form-field appearance="fill" [style.width.px]=110>
+                                <mat-label>Da data: </mat-label>
+                                <input matInput 
+                                    [matDatepicker]="searchFilterFromDate" 
+                                    [(ngModel)]="additionalSearchFilter.fromDate"
+                                    (ngModelChange)="setFilters()"
+                                    placeholder="Scegli data">
+                                    <mat-datepicker-toggle matSuffix [for]="searchFilterFromDate"></mat-datepicker-toggle>
+                                <mat-datepicker #searchFilterFromDate></mat-datepicker>
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field appearance="fill" [style.width.px]=110>
+                                <mat-label>A data: </mat-label>
+                                <input matInput 
+                                    [matDatepicker]="searchFilterToDate" 
+                                    [(ngModel)]="additionalSearchFilter.toDate"
+                                    (ngModelChange)="setFilters()"
+                                    placeholder="Scegli data"> 
+                                <mat-datepicker-toggle matSuffix [for]="searchFilterToDate"></mat-datepicker-toggle>
+                                <mat-datepicker #searchFilterToDate></mat-datepicker>
+                            </mat-form-field>                
+<!--
+-->
+                        </td>
+                    </tr>
                 </table>
             </td>
             <td style='border: 1px solid black; vertical-align: top;'>
-                <app-order-handler [orderHandler]="orderHandler" 
+                <app-order-handler [orderHandler]="orderHandler"
                                    [orderList]="orderList" 
                                    [orderDetails]="orderDetails"
                                    [orderValue]="orderValue"
@@ -130,8 +192,80 @@
     <table style='width:100%;'>
         <tr>
             <td width='60%' valign='top'>
-                <div style='max-height:500px; min-height:500px; overflow-y:auto'>
-                    <mat-table [dataSource]="dataSource" id="orders" matSort class="mat-elevation-z8">
+                <div>
+                    <mat-table [dataSource]="bogusDataSource" id="orders" matSort style="max-width: 99%;">
+                        <ng-container matColumnDef="status">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>St</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.status}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="forwarder">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Vet</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.forwarder}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="orderRef">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Ordine</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.orderRef}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerRefERP">
+                            <mat-header-cell *matHeaderCellDef>Codice</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerRefERP}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerDescription">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerDescription}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="customerDeliveryProvince">
+                            <mat-header-cell *matHeaderCellDef>PV</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.customerDeliveryProvince}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="shipmentDate">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.shipmentDate|date:'dd/MM/yy'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="requestedAssemblyDate">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.requestedAssemblyDate|date:'dd/MM/yy'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="sourceIssue">
+                            <mat-header-cell *matHeaderCellDef>E</mat-header-cell>
+                            <mat-cell *matCellDef="let order">{{order.sourceIssue}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="compositionBoards">
+                            <mat-header-cell *matHeaderCellDef>B</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightBoards':order.compositionBoards>0}">
+                                {{order.compositionBoards > 0 ? order.compositionBoards : " "}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="compositionTrays">
+                            <mat-header-cell *matHeaderCellDef>P</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightTrays':order.compositionTrays>0}">
+                                {{(order.compositionTrays > 0 ? order.compositionTrays : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="compositionDesign">
+                            <mat-header-cell *matHeaderCellDef>D</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightDesign':order.compositionDesign>0}">
+                                {{(order.compositionDesign > 0 ? order.compositionDesign : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="compositionAccessories">
+                            <mat-header-cell *matHeaderCellDef>A</mat-header-cell>
+                            <mat-cell *matCellDef="let order" [ngClass]="{'highlightAccessories':order.compositionAccessories>0}">
+                                {{(order.compositionAccessories > 0 ? order.compositionAccessories : " ")}}
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="empty1">
+                            <mat-header-cell *matHeaderCellDef>{{ empty }}</mat-header-cell>
+                            <mat-cell *matCellDef="let order">
+                                {{ empty }}
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="getOrdersDisplayedColumns();"></mat-header-row>
+                    </mat-table>
+                </div>
+                <div style='max-height:450px; min-height:350px; overflow-y:auto'>
+                    <mat-table [dataSource]="dataSource" id="orders" matSort>
                         <ng-container matColumnDef="status">
                             <mat-header-cell *matHeaderCellDef mat-sort-header>St</mat-header-cell>
                             <mat-cell *matCellDef="let order">{{order.status}}</mat-cell>
@@ -204,8 +338,9 @@
                                 {{ empty }}
                             </mat-cell>
                         </ng-container>
-
-                        <mat-header-row *matHeaderRowDef="getOrdersDisplayedColumns()"></mat-header-row>
+<!--
+                        <mat-header-row *matHeaderRowDef="getOrdersDisplayedColumns();" [style.min-height]="0" [style.max-height]="0"></mat-header-row>
+-->
                         <mat-row *matRowDef="let row; columns: getOrdersDisplayedColumns()" (click)="listOrderDetails(row)"></mat-row>
                     </mat-table>
                 </div>
