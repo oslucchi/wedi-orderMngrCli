@@ -11,11 +11,24 @@ div#output {
     min-height: 140px;
     max-height: 140px;
     overflow-y: auto;
+    overflow-x: wrap;
     resize: none;
-    white-space: pre;
+    white-space: pre-wrap;
     font-size: 14px;
 }
 
 input {
     width: 300px;
+}
+
+.redStatement {
+    color: red;
+}
+
+.greenStatement {
+    color: green;
+}
+
+.blueStatement {
+    color: blue;
 }

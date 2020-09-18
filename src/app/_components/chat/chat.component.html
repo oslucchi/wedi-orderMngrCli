@@ -9,9 +9,7 @@
 <!--
     <textarea id="output" readonly>{{ textarea }}</textarea>
 -->
-    <div #scrollMe id='output' [scrollTop]="scrollMe.scrollHeight">
-        {{ textarea }}
-    </div>
+    <div #scrollMe id='output' [scrollTop]="scrollMe.scrollHeight" [innerHTML]="textarea"></div>
     <br>
     <mat-form-field appearance="fill">
         <mat-label>Tipo msg</mat-label>

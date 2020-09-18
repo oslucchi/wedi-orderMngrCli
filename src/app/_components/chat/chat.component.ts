@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Message } from '@app/_models/message';
 import { User } from '@app/_models/user';
 import { DatePipe } from '@angular/common';
@@ -10,10 +10,12 @@ import { environment } from 'environments/environment';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrls: ['./chat.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ChatComponent implements OnInit {
+  private color: string = "blue";
   private ws: WebSocket;
   public msg: Message = new Message();
   public textarea: string = "";
@@ -95,11 +97,12 @@ export class ChatComponent implements OnInit {
           case Message.MSG_BROADCAST:
           case Message.MSG_PRIVATE:
             instance.today  = new Date();
-            instance.textarea += "[" + instance.datepipe.transform(msg.timestamp, 'HH:mm:ss') + "] <= " +
-                            msg.sender + (msg.type == Message.MSG_BROADCAST ? " (B)" : "" ) +
-                            ": " + msg.text + "\n";
+            instance.textarea += "<span class='" + (msg.type == Message.MSG_BROADCAST ? "blueStatement" : "redStatement") + "'>" +
+                                    "[" + instance.datepipe.transform(msg.timestamp, 'HH:mm:ss') + "] <= " +
+                                    msg.sender + ": " + msg.text + "</span><br>";
             break;
-          case Message.MSG_KEEP_ALIVE_RESPONSE:
+
+            case Message.MSG_KEEP_ALIVE_RESPONSE:
             instance.keepAliveStatus = false;
             console.log("KEEP_ALIVE_RESPONSE received");
       }
@@ -174,8 +177,8 @@ export class ChatComponent implements OnInit {
     console.log("sendMsg: sending msg via chatService: '" + JSON.stringify(this.msg) +"'");
     this.ws.send(JSON.stringify(this.msg));
     this.today  = new Date();
-    this.textarea += "[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] => " +
-                     this.msg.recipient + ": " + this.msg.text + "\n";
+    this.textarea += "<span class='greenStatement'>[" + this.datepipe.transform(this.today, 'HH:mm:ss') + "] => " +
+                     this.msg.recipient + ": " + this.msg.text + "</span><br>";
     this.msg.recipient = "";
     this.msg.text = "";
     this.timerReset = true;

@@ -187,6 +187,12 @@
             </td>
         </tr>
     </table>
+    <app-auto-refresh
+        (TimerExpired)="getOrdersBasedOnFilters(true)" 
+        [timerSet]="timerSet" 
+        [(timerReset)]="timerReset"
+        [hidden]="true">
+    </app-auto-refresh>
 </div>
 <div>
     <table style='width:100%;'>

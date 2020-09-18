@@ -101,7 +101,9 @@ export class OrdersComponent implements OnInit {
     { def: 'piecesFromSqm', hide: false },
     { def: 'articleUnityOfMeasure', hide: false },
    ];
-
+   public timerSet: number = 1;
+   public timerReset: boolean = false;
+ 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private apiService: ApiService,
@@ -144,7 +146,7 @@ export class OrdersComponent implements OnInit {
                 "\n\tfilterOrders: " + this.profile.filters.filterOrders + 
                 "\n\tfilterWarehouse: " + this.profile.filters.filterOrders +
                 "\n\tfilterShipment:" + this.profile.filters.filterShipment);
-    this.getOrdersBasedOnFilters();
+    this.getOrdersBasedOnFilters(false);
   }
 
   getOrderDetails()
@@ -251,7 +253,23 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  getOrdersBasedOnFilters()
+  orderListComparer(otherArray: Orders[])
+  {
+    return function(current: Orders){
+      return otherArray.filter(function(other){
+        return other.idOrder == current.idOrder
+      }).length == 0;
+    }
+  }
+
+  orderInArray(order: Orders, array: Orders[])
+  {
+    return array.some(function(item) {
+      return order.idOrder === item.idOrder
+    });
+  }
+
+  getOrdersBasedOnFilters(fromRefresh: boolean)
   {
     var i: number;
     var y: number;
@@ -274,7 +292,27 @@ export class OrdersComponent implements OnInit {
       )
       .subscribe(
           (res: HttpResponse<any>)=>{
-            this.orderList = res.body.orderList;
+            if (fromRefresh)
+            {
+              var removeFromList = this.orderList.filter(this.orderListComparer(res.body.orderList));
+              var addToList = res.body.orderList.filter(this.orderListComparer(this.orderList));
+              if ((removeFromList.length != 0) || (addToList.length != 0))
+              {
+                var mergedOrderList: Orders[] = [];
+                this.orderList.forEach(element => {
+                  if (!this.orderInArray(element, removeFromList))
+                  {
+                    mergedOrderList.push(element);
+                  }
+                });
+                this.orderList = mergedOrderList.concat(addToList);     
+              }
+              this.timerReset = true;
+            }
+            else
+            {
+              this.orderList = res.body.orderList;
+            }
             this.dataSource = new MatTableDataSource<Orders>(this.orderList);
             this.dataSource.sort = this.sort;
             this.setFilters();
@@ -330,7 +368,7 @@ export class OrdersComponent implements OnInit {
         break;
     }
     this.profile.setProfile();
-    this.getOrdersBasedOnFilters();
+    this.getOrdersBasedOnFilters(false);
   }
 
   statusTransitionEval(status: string)
